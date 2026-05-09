@@ -1,31 +1,61 @@
 [gd_scene format=3 uid="uid://bpeieb13mmwmw"]
 
-[ext_resource type="Texture2D" uid="uid://dklwyrq6y40q5" path="res://art/char_paper_temp.jpg" id="1_imi1m"]
 [ext_resource type="Script" uid="uid://bbh03qu5yw4ju" path="res://poster.gd" id="1_ubgtn"]
+[ext_resource type="Texture2D" uid="uid://cuqqpy6bxq7f1" path="res://art/wanted_poster.png" id="2_ubgtn"]
+[ext_resource type="FontFile" uid="uid://bb7tm4nckig6j" path="res://fonts/Bookman Old Style Bold.ttf" id="3_g538a"]
+[ext_resource type="FontFile" uid="uid://ccru57xiyx2le" path="res://fonts/Bookman Old Style Regular.ttf" id="4_65yai"]
+[ext_resource type="Script" uid="uid://b7be02l8dj5ch" path="res://poster_head.gd" id="5_mp3sy"]
 
 [node name="Poster" type="Node2D" unique_id=811473367]
 script = ExtResource("1_ubgtn")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=374599314]
-scale = Vector2(0.1336383, 0.14736961)
-texture = ExtResource("1_imi1m")
+scale = Vector2(1, 1.097)
+texture = ExtResource("2_ubgtn")
 
-[node name="Label" type="Label" parent="." unique_id=1281915572]
+[node name="NameLabel" type="Label" parent="." unique_id=1930682609]
+offset_left = -47.0
+offset_top = 53.0
+offset_right = 52.0
+offset_bottom = 76.0
+theme_override_colors/font_color = Color(0.6117647, 0.3882353, 0.19215687, 1)
+theme_override_fonts/font = ExtResource("3_g538a")
+text = "Bob Newton"
+
+[node name="BountyLabel" type="Label" parent="." unique_id=1281915572]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -36.5
-offset_top = 58.0
-offset_right = 36.5
-offset_bottom = 103.0
+offset_left = -37.0
+offset_top = 75.0
+offset_right = 36.0
+offset_bottom = 120.0
 grow_horizontal = 2
+theme_override_colors/font_color = Color(0.6117647, 0.3882353, 0.19215687, 1)
+theme_override_fonts/font = ExtResource("3_g538a")
 theme_override_font_sizes/font_size = 26
 text = "$100"
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=241910846]
-offset_left = -61.99998
-offset_top = -71.0
-offset_right = -21.99998
-offset_bottom = -31.0
+offset_left = -64.0
+offset_top = -80.0
+offset_right = -24.0
+offset_bottom = -40.0
 scale = Vector2(3.2712908, 3.2116168)
-color = Color(0.00011382803, 0.00011382803, 0.00011382803, 1)
+color = Color(0.09019608, 0.09019608, 0.09019608, 0.9254902)
+
+[node name="RewardLabel" type="Label" parent="." unique_id=9379618]
+offset_left = -46.0
+offset_top = 107.0
+offset_right = 48.0
+offset_bottom = 134.0
+theme_override_colors/font_color = Color(0.6117647, 0.3882353, 0.19215687, 1)
+theme_override_fonts/font = ExtResource("4_65yai")
+theme_override_font_sizes/font_size = 12
+text = "CASH REWARD"
+
+[node name="PosterHead" type="Node2D" parent="." unique_id=1545620881]
+position = Vector2(0, -15)
+scale = Vector2(3, 3)
+script = ExtResource("5_mp3sy")
+metadata/_custom_type_script = "uid://b7be02l8dj5ch"

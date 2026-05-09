@@ -37,14 +37,19 @@ class_name Person extends Node2D
 
 
 var target : Vector2
-var speed : int = 10
+var speed : int = 30 # 10 is a casual speed
+var bounty : int = 0 # if the bounty is zero, they aren't a criminal
 
 var has_eyebrows = true
 var has_moustache = true
 
-#var player_pos = Vector2(0, 0)
 
 const my_scene : PackedScene = preload("res://person.tscn")
+
+var head_color_idx : int = 0
+var hair_color_idx : int = 0
+var body_color_idx : int = 0
+var eyes_color_idx : int = 0
 
 
 const EYE_COLORS = [
@@ -82,88 +87,81 @@ const BODY_COLORS = [
 	Color.LIGHT_GREEN
 ]
 
+enum DRAW_TYPE { RECT, CIRCLE, ELLIPSE, POLYGON }
+enum FEATURE_TYPE { BODY, HEAD, MOUSTACHE, EYES, EYEBROWS }
+var feature_params = []
+
 
 
 static func constructor(pos : Vector2) -> Person:
 	var person = my_scene.instantiate()
-	#person.player_pos = pos
 	person.position = pos
 	person.target = pos
 	person.randomize_colors()
 	person.randomize_facial_hair()
+	person.set_initial_features()
 	return person
 
 
 
-#func _ready():
-	#
-	#var my_node = Node2D.new()
-	#
-	#my_node.position = Vector2(200, 150)
-	#
-	#add_child(my_node)
-	#
-	#var label = Label.new()
-	#label.text = "hello from node 2d!"
-	#my_node.add_child(label)
+func _ready():
+	set_initial_features()
+	# We draw the person once
+	queue_redraw()
 
 
 
 
-func _draw_body(position : Vector2):
-	draw_rect(Rect2(position.x - (body_width/2), position.y, body_width, body_height), body_color)
-
-
-func _draw_head(position : Vector2):
-	draw_ellipse(position, head_width, head_height, head_color)
+# This function will add the order of all the features needed for this person
+func set_initial_features():
+	# BODY
+	feature_params.append([FEATURE_TYPE.BODY, DRAW_TYPE.RECT, [Rect2(-(body_width/2), 0, body_width, body_height), body_color]])
 	
+	# HEAD
+	feature_params.append([FEATURE_TYPE.HEAD, DRAW_TYPE.ELLIPSE, [Vector2(0, 0), head_width, head_height, head_color]])
 	
+	# MOUSTACHE
+	if has_moustache:
+		var offset : Vector2 = Vector2(0, 2)
+		var coords = [
+			[offset.x - moustache_radius * moustache_endpoint_ratio, offset.y + moustache_radius * moustache_endpoint_ratio], # left point
+			[offset.x + moustache_radius * moustache_endpoint_ratio, offset.y + moustache_radius * moustache_endpoint_ratio], # right point
+			[offset.x + moustache_radius * moustache_bridge_ratio, offset.y], # top-right point
+			[offset.x, offset.y - moustache_radius * moustache_height_ratio],  # top point
+			[offset.x - moustache_radius * moustache_bridge_ratio, offset.y], # top-left point
+		]
+		var head = float_array_to_Vector2Array(coords)
+		feature_params.append([FEATURE_TYPE.MOUSTACHE, DRAW_TYPE.POLYGON, [head, [ moustache_color ]]])
 	
+	# EYES
+	feature_params.append([FEATURE_TYPE.EYES, DRAW_TYPE.CIRCLE, [Vector2(eye_spacing * -1, eye_y_offset), eye_radius, eye_color]])
+	feature_params.append([FEATURE_TYPE.EYES, DRAW_TYPE.CIRCLE, [Vector2(eye_spacing, eye_y_offset), eye_radius, eye_color]])
+		
+	# EYEBROWS
+	if has_eyebrows:
+		var pivot : Vector2 = Vector2(-eyebrow_spacing - (eyebrow_width/2), eyebrow_y_offset)
+		var points = get_rotated_rect(Rect2(0, 0, eyebrow_width, eyebrow_height), eyebrow_rotation, pivot)
+		feature_params.append([FEATURE_TYPE.EYEBROWS, DRAW_TYPE.POLYGON, [points, [ eyebrow_color ]]])
+		
+		pivot = Vector2(eyebrow_spacing - (eyebrow_width/2), eyebrow_y_offset)
+		points = get_rotated_rect(Rect2(0, 0, eyebrow_width, eyebrow_height), eyebrow_rotation * -1, pivot)
+		feature_params.append([FEATURE_TYPE.EYEBROWS, DRAW_TYPE.POLYGON, [points, [ eyebrow_color ]]])
+	
+
+
 func float_array_to_Vector2Array(coords : Array) -> PackedVector2Array:
 	# Convert the array of floats into a PackedVector2Array.
 	var array : PackedVector2Array = []
 	for coord in coords:
 		array.append(Vector2(coord[0], coord[1]))
 	return array
-	
-	
-	
-#func get_triangle_points(position : Vector2, size): # size is kind of a radius? this triangle isn't equalatiural
-	## triangle is centered on position
-	#var coords = [
-		#[position.x - size * 2, position.y + size * 2], # left point
-		#[position.x + size * 2, position.y + size * 2], # right point
-		#[position.x, position.y - size]  # top point
-	#]
-	#var head = float_array_to_Vector2Array(coords)
-	#return head
-	
-	
-func _draw_moustache(position : Vector2):
-	#var head = get_triangle_points(position, moustache_radius)
-	var coords = [
-		[position.x - moustache_radius * moustache_endpoint_ratio, position.y + moustache_radius * moustache_endpoint_ratio], # left point
-		[position.x + moustache_radius * moustache_endpoint_ratio, position.y + moustache_radius * moustache_endpoint_ratio], # right point
-		[position.x + moustache_radius * moustache_bridge_ratio, position.y], # top-right point
-		[position.x, position.y - moustache_radius * moustache_height_ratio],  # top point
-		[position.x - moustache_radius * moustache_bridge_ratio, position.y], # top-left point
-	]
-	var head = float_array_to_Vector2Array(coords)
-	draw_polygon(head, [ moustache_color ])
 
 
-func _draw_eyes(position : Vector2):
-	draw_circle(position + Vector2(eye_spacing * -1, eye_y_offset), eye_radius, eye_color)
-	draw_circle(position + Vector2(eye_spacing, eye_y_offset), eye_radius, eye_color)
-
-
-
-func draw_rotated_rect(rect : Rect2, degrees : int, pivot : Vector2): # it's not a pivot it's kinda the offset?
-	#var rect = Rect2(Vector2(0, 0), Vector2(100, 50))
+func get_rotated_rect(rect : Rect2, degrees : int, pivot : Vector2): # it's not a pivot it's kinda the offset?
 	var rotation_angle = deg_to_rad(degrees) # 30 degrees
 
 	# Create a transform with rotation
-	var transform_x = Transform2D(rotation_angle, Vector2(0, 0))
+	var rotation_transform = Transform2D(rotation_angle, Vector2(0, 0))
 
 	## Convert Rect2 to polygon points
 	var points = [
@@ -175,95 +173,64 @@ func draw_rotated_rect(rect : Rect2, degrees : int, pivot : Vector2): # it's not
 #
 	## Apply rotation transform to each point
 	for i in range(points.size()):
-		points[i] = transform_x.basis_xform(points[i])
+		points[i] = rotation_transform.basis_xform(points[i])
 		points[i] += pivot + Vector2(0, -sin(rotation_angle)*eyebrow_rotation/2)
 	
-
-	# Draw rotated polygon
-	draw_polygon(points, [ eyebrow_color ])
+	return points
 	
 	
-func _draw_eyebrows(position : Vector2):
-	#draw_rect(Rect2(position.x - eyebrow_spacing - (eyebrow_width/2), position.y + eyebrow_y_offset, eyebrow_width, eyebrow_height), Color.DARK_GREEN)
-	#draw_rect(Rect2(position.x + eyebrow_spacing - (eyebrow_width/2), position.y + eyebrow_y_offset, eyebrow_width, eyebrow_height), Color.DARK_GREEN)
-	var pivot : Vector2 = Vector2(position.x - eyebrow_spacing - (eyebrow_width/2), position.y + eyebrow_y_offset)
-	#draw_circle(pivot, 5, Color.RED)
-	#for i in range(0,91):
-		#draw_rotated_rect(Rect2(0, 0, eyebrow_width, eyebrow_height), eyebrow_rotation + i, pivot)
-	draw_rotated_rect(Rect2(0, 0, eyebrow_width, eyebrow_height), eyebrow_rotation, pivot)
-	pivot = Vector2(position.x + eyebrow_spacing - (eyebrow_width/2), position.y + eyebrow_y_offset)
-	draw_rotated_rect(Rect2(0, 0, eyebrow_width, eyebrow_height), eyebrow_rotation * -1, pivot)
-		#draw_rotated_rect(Rect2(position.x - eyebrow_spacing - (eyebrow_width/2), position.y + eyebrow_y_offset, eyebrow_width, eyebrow_height), eyebrow_rotation + i, pivot)
-	#var default_rect = Rect2(0, 0, eyebrow_width, eyebrow_height)
-	#var rotation_angle = deg_to_rad(-90) # 30 degrees
-	#var transform_x = Transform2D(rotation_angle, Vector2(0, 0))
-	#var new_rect : Rect2 = default_rect * transform_x # ORDER HERE MATTERS !!!!!
-	#new_rect.position.x += position.x - eyebrow_spacing - (eyebrow_width/2)
-	#new_rect.position.y += position.y + eyebrow_y_offset
-	#var points = [
-		#new_rect.position,
-		#new_rect.position + Vector2(new_rect.size.x, 0),
-		#new_rect.position + new_rect.size,
-		#new_rect.position + Vector2(0, new_rect.size.y)
-	#]	
-	#draw_polygon(points, [ Color.DARK_GREEN ])
-	
-	#default_rect = Rect2(0, 0, eyebrow_width, eyebrow_height)
-	#rotation_angle = deg_to_rad(0) # 30 degrees
-	#transform_x = Transform2D(rotation_angle, Vector2(0, 0))
-	#new_rect = default_rect * transform_x # ORDER HERE MATTERS !!!!!
-	#new_rect.position.x += position.x - eyebrow_spacing - (eyebrow_width/2)
-	#new_rect.position.y += position.y + eyebrow_y_offset
-	#draw_polygon(new_rect, Color.DARK_GREEN)
 
 
-func _draw_person(position : Vector2):
-	_draw_body(position)
-	_draw_head(position)
-	if has_moustache:
-		_draw_moustache(position + Vector2(0, 2))
-	_draw_eyes(position)
-	if has_eyebrows:
-		_draw_eyebrows(position)
+func _draw_feature_shapes():
+	for feature_param in feature_params:
+		var feature = feature_param[0]
+		var shape = feature_param[1]
+		var params = feature_param[2]
+		
+		if shape == DRAW_TYPE.RECT:
+			draw_rect(params[0], params[1])
+		elif shape == DRAW_TYPE.ELLIPSE:
+			draw_ellipse(params[0], params[1], params[2], params[3])
+		elif shape == DRAW_TYPE.POLYGON:
+			draw_polygon(params[0], params[1])
+		elif shape == DRAW_TYPE.CIRCLE:
+			draw_circle(params[0], params[1], params[2])
 
 
 func _draw():
-	_draw_person(position)
-	#draw_circle(position, 2, Color.GREEN)
-	
-	
+	_draw_feature_shapes()
+
+
 func _process(delta : float):
 	
 	# wander logic
 	if position.distance_to(target) < 1.0:
 		# pick a new target
-		target = Vector2(randi_range(0, 500), randi_range(0, 500))
+		target = Vector2(randi_range(0, 1000), randi_range(0, 1000))
 	else:
 		# keep moving to our target
 		position = position.move_toward(target, speed * delta)
-		
-	queue_redraw()
-	
-	
+
+
 
 func randomize_colors():
-	var head_idx = randi_range(0, len(HEAD_COLORS) - 1)
-	head_color = HEAD_COLORS[head_idx]
+	head_color_idx = randi_range(0, len(HEAD_COLORS) - 1)
+	head_color = HEAD_COLORS[head_color_idx]
 	
-	var hair_idx = randi_range(0, len(HAIR_COLORS) - 1)
-	eyebrow_color = HAIR_COLORS[hair_idx]
-	moustache_color = HAIR_COLORS[hair_idx]
+	hair_color_idx = randi_range(0, len(HAIR_COLORS) - 1)
+	eyebrow_color = HAIR_COLORS[hair_color_idx]
+	moustache_color = HAIR_COLORS[hair_color_idx]
 	
-	var body_idx = randi_range(0, len(BODY_COLORS) - 1)
-	body_color = BODY_COLORS[body_idx]
+	body_color_idx = randi_range(0, len(BODY_COLORS) - 1)
+	body_color = BODY_COLORS[body_color_idx]
 		
-	var eyes_idx = randi_range(0, len(EYE_COLORS) - 1)
-	eye_color = EYE_COLORS[eyes_idx]
+	eyes_color_idx = randi_range(0, len(EYE_COLORS) - 1)
+	eye_color = EYE_COLORS[eyes_color_idx]
+
 
 func randomize_facial_hair():
 	if randf() < 0.4:
 		has_moustache = false
 	if randf() < 0.1:
 		has_eyebrows = false
-		
 		

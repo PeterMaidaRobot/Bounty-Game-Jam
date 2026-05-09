@@ -2,11 +2,13 @@
 
 [ext_resource type="Script" uid="uid://2o10v7a646cl" path="res://main.gd" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://584nm6f4y54f" path="res://person.tscn" id="2_0xm2m"]
+[ext_resource type="FontFile" uid="uid://ccru57xiyx2le" path="res://fonts/Bookman Old Style Regular.ttf" id="2_h2yge"]
 
 [node name="Main" type="Node2D" unique_id=1702526141]
 script = ExtResource("1_ig7tw")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1770129135]
+visible = false
 
 [node name="ColorRect" type="ColorRect" parent="CanvasLayer" unique_id=16506923]
 visible = false
@@ -17,26 +19,33 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.6862745, 0.8666667, 0.8117647, 1)
 
-[node name="StartButton" type="Button" parent="CanvasLayer" unique_id=1230127673]
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -23.0
-offset_top = -31.0
-offset_right = 23.0
-grow_horizontal = 2
-grow_vertical = 0
-text = "Start"
-
-[node name="DummyPerson" parent="." unique_id=203893817 instance=ExtResource("2_0xm2m")]
-position = Vector2(100, 100)
-
 [node name="Y_Sorted_Sprites" type="Node2D" parent="." unique_id=1605844370]
 y_sort_enabled = true
 
 [node name="People" type="Node2D" parent="Y_Sorted_Sprites" unique_id=1822685249]
 y_sort_enabled = true
 
-[node name="Posters" type="Node2D" parent="." unique_id=1453599168]
+[node name="PosterOverlay" type="Node2D" parent="." unique_id=923336745]
+
+[node name="Posters" type="Node2D" parent="PosterOverlay" unique_id=1453599168]
+
+[node name="BeginButton" type="Button" parent="PosterOverlay" unique_id=1230127673]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 902.0
+offset_top = 964.0
+offset_right = 1017.0
+offset_bottom = 1011.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("2_h2yge")
+theme_override_font_sizes/font_size = 32
+text = "BEGIN"
+
+[node name="DummyPerson" parent="." unique_id=203893817 instance=ExtResource("2_0xm2m")]
+position = Vector2(100, 100)
+
+[connection signal="pressed" from="PosterOverlay/BeginButton" to="." method="_on_begin_button_pressed"]

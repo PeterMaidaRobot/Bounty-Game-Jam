@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bdmqka4gvx5s8"]
+
+[ext_resource type="Script" uid="uid://b7be02l8dj5ch" path="res://poster_head.gd" id="1_sh61w"]
+
+[node name="PosterHead" type="Node2D" unique_id=1581525482]
+script = ExtResource("1_sh61w")

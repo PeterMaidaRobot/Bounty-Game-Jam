@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dklwyrq6y40q5"
-path="res://.godot/imported/char_paper_temp.jpg-ea4c4209c1c74d6e6ca64cbf9f8ceb0f.ctex"
+uid="uid://cuqqpy6bxq7f1"
+path="res://.godot/imported/wanted_poster.png-94e9d9396d69cc5aefcac6d60c5f6b48.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/char_paper_temp.jpg"
-dest_files=["res://.godot/imported/char_paper_temp.jpg-ea4c4209c1c74d6e6ca64cbf9f8ceb0f.ctex"]
+source_file="res://art/wanted_poster.png"
+dest_files=["res://.godot/imported/wanted_poster.png-94e9d9396d69cc5aefcac6d60c5f6b48.ctex"]
 
 [params]
 

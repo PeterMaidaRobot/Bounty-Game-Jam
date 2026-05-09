@@ -241,8 +241,7 @@ func _process(delta : float):
 	else:
 		# keep moving to our target
 		position = position.move_toward(target, speed * delta)
-	
-	
+		
 	queue_redraw()
 	
 	

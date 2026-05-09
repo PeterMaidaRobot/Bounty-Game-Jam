@@ -145,13 +145,14 @@ func end_day():
 					poster.show_jail()
 					person.new_crime = Person.CRIME_TYPE.CAUGHT
 				else:
-					person.new_crime = Person.CRIME_TYPE.STEAL_APPLE
+					person.start_new_crime()
 					poster.show_crime(person.new_crime)
 				break
 	
 	# Commit crimes
 	for person in people:
 		person.commit_crime()
+		# TODO burn a building if the crime is ARSON
 
 
 '''

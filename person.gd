@@ -102,7 +102,7 @@ const LAST_NAME_OPTIONS = ["Smith", "Long", "Wild", "Brown", "Wilson"]
 
 
 
-enum CRIME_TYPE { NONE, CAUGHT, STEAL_APPLE }
+enum CRIME_TYPE { NONE, CAUGHT, STEAL_APPLE, ARSON }
 var new_crime : CRIME_TYPE = CRIME_TYPE.NONE
 
 
@@ -277,6 +277,8 @@ static func get_bounty_increase(crime : CRIME_TYPE):
 			pass
 		CRIME_TYPE.STEAL_APPLE:
 			increase = 100
+		CRIME_TYPE.ARSON:
+			increase = 500
 	return increase
 	
 	
@@ -289,3 +291,12 @@ static func get_crime_string(crime : CRIME_TYPE):
 			return ""
 		CRIME_TYPE.STEAL_APPLE:
 			return "Stole\nApple\n+$" + str(increase)
+		CRIME_TYPE.ARSON:
+			return "ARSON!\n+$" + str(increase)
+			
+func start_new_crime():
+	# randomly choose a new crime
+	if bounty >= 1000:
+		new_crime = CRIME_TYPE.ARSON
+	else:
+		new_crime = CRIME_TYPE.STEAL_APPLE

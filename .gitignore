@@ -1,3 +1,13 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+# Ignore backup files and krita stuff
+*~
+*-autosave.kra
+
+# Ignore my Godot builds folder
+builds/*
+
+# Ignore tmp files that Godot might make on bad save attempts
+*tmp

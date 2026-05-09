@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://dkfgw76reuh6e"]
+
+[ext_resource type="Script" uid="uid://ce4bt6cwfjwtb" path="res://jail_icon.gd" id="1_5pix5"]
+[ext_resource type="Texture2D" uid="uid://clcm04rpbttk2" path="res://art/jail_cell.png" id="2_s286m"]
+[ext_resource type="Script" uid="uid://b7be02l8dj5ch" path="res://poster_head.gd" id="3_s286m"]
+
+[node name="JailIcon" type="Node2D" unique_id=890865304]
+script = ExtResource("1_5pix5")
+
+[node name="PosterHead" type="Node2D" parent="." unique_id=2048538192]
+scale = Vector2(1.5, 1.5)
+script = ExtResource("3_s286m")
+metadata/_custom_type_script = "uid://b7be02l8dj5ch"
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=955068050]
+texture = ExtResource("2_s286m")
+
+[node name="NameLabel" type="Label" parent="." unique_id=1412743105]
+offset_left = -43.0
+offset_top = 51.0
+offset_right = -3.0
+offset_bottom = 74.0
+theme_override_font_sizes/font_size = 12
+
+[node name="BountyLabel" type="Label" parent="." unique_id=1576796634]
+offset_left = -35.0
+offset_top = 74.0
+offset_right = 5.0
+offset_bottom = 97.0

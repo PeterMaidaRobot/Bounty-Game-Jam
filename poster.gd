@@ -14,4 +14,5 @@ static func constructor(person : Person, pos : Vector2) -> Poster:
 
 func draw_head(person : Person):
 	$BountyLabel.text = "$" + str(person.bounty)
+	$NameLabel.text = person.full_name
 	$PosterHead.draw_head(person)

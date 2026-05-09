@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://2o10v7a646cl" path="res://main.gd" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://584nm6f4y54f" path="res://person.tscn" id="2_0xm2m"]
 [ext_resource type="FontFile" uid="uid://ccru57xiyx2le" path="res://fonts/Bookman Old Style Regular.ttf" id="2_h2yge"]
+[ext_resource type="FontFile" uid="uid://bb7tm4nckig6j" path="res://fonts/Bookman Old Style Bold.ttf" id="4_1bvp3"]
 
 [node name="Main" type="Node2D" unique_id=1702526141]
 script = ExtResource("1_ig7tw")
@@ -48,4 +49,31 @@ text = "BEGIN"
 [node name="DummyPerson" parent="." unique_id=203893817 instance=ExtResource("2_0xm2m")]
 position = Vector2(100, 100)
 
+[node name="CatchLabel" type="Label" parent="." unique_id=1538146068]
+visible = false
+offset_left = 860.0
+offset_top = 872.0
+offset_right = 1083.0
+offset_bottom = 930.0
+theme_override_fonts/font = ExtResource("4_1bvp3")
+theme_override_font_sizes/font_size = 48
+text = "Caught x"
+
+[node name="CatchLabelTimer" type="Timer" parent="CatchLabel" unique_id=1762655126]
+
+[node name="JailIcons" type="Node2D" parent="." unique_id=1184847544]
+position = Vector2(184, 969)
+
+[node name="EndDayButton" type="Button" parent="." unique_id=1075084938]
+offset_left = 26.0
+offset_top = 947.0
+offset_right = 104.0
+offset_bottom = 1023.0
+theme_override_fonts/font = ExtResource("4_1bvp3")
+theme_override_font_sizes/font_size = 28
+text = "End
+Day"
+
 [connection signal="pressed" from="PosterOverlay/BeginButton" to="." method="_on_begin_button_pressed"]
+[connection signal="timeout" from="CatchLabel/CatchLabelTimer" to="." method="_on_catch_label_timer_timeout"]
+[connection signal="pressed" from="EndDayButton" to="." method="end_day"]

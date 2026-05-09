@@ -2,7 +2,19 @@
 
 [ext_resource type="Script" uid="uid://u5i4dkguivrp" path="res://person.gd" id="1_0pife"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0pife"]
+size = Vector2(20, 60.931007)
+
 [node name="Person" type="Node2D" unique_id=1329247068]
 y_sort_enabled = true
 script = ExtResource("1_0pife")
 metadata/_custom_type_script = "uid://u5i4dkguivrp"
+
+[node name="Area2D" type="Area2D" parent="." unique_id=2080619554]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1937653388]
+position = Vector2(0, 14.340021)
+scale = Vector2(1.4399992, 1.1600012)
+shape = SubResource("RectangleShape2D_0pife")
+
+[connection signal="input_event" from="Area2D" to="." method="_on_area_2d_input_event"]

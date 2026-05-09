@@ -35,9 +35,12 @@ class_name Person extends Node2D
 @export_group("")
 
 
+signal person_clicked(person)
+
 
 var target : Vector2
 var speed : int = 30 # 10 is a casual speed
+var full_name : String = "Bob Smith"
 var bounty : int = 0 # if the bounty is zero, they aren't a criminal
 
 var has_eyebrows = true
@@ -45,6 +48,8 @@ var has_moustache = true
 
 
 const my_scene : PackedScene = preload("res://person.tscn")
+
+var draw_enabled = true
 
 var head_color_idx : int = 0
 var hair_color_idx : int = 0
@@ -91,6 +96,8 @@ enum DRAW_TYPE { RECT, CIRCLE, ELLIPSE, POLYGON }
 enum FEATURE_TYPE { BODY, HEAD, MOUSTACHE, EYES, EYEBROWS }
 var feature_params = []
 
+const FIRST_NAME_OPTIONS = ["Alex", "Bob", "Charlie", "Dax", "Edward", "Felipe", "Greg", "Spencer"]
+const LAST_NAME_OPTIONS = ["Smith", "Long", "Wild", "Brown", "Wilson"]
 
 
 static func constructor(pos : Vector2) -> Person:
@@ -99,7 +106,8 @@ static func constructor(pos : Vector2) -> Person:
 	person.target = pos
 	person.randomize_colors()
 	person.randomize_facial_hair()
-	person.set_initial_features()
+	person.set_initial_features()	
+	person.full_name = FIRST_NAME_OPTIONS.pick_random() + " " + LAST_NAME_OPTIONS.pick_random()
 	return person
 
 
@@ -198,7 +206,8 @@ func _draw_feature_shapes():
 
 
 func _draw():
-	_draw_feature_shapes()
+	if draw_enabled:
+		_draw_feature_shapes()
 
 
 func _process(delta : float):
@@ -233,4 +242,14 @@ func randomize_facial_hair():
 		has_moustache = false
 	if randf() < 0.1:
 		has_eyebrows = false
+		
+
+
+func _on_area_2d_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
+	if Input.is_action_just_pressed("click"):
+		print("clicked " + full_name + " with bounty of: " + str(bounty))
+		person_clicked.emit(self)
+		draw_enabled = false
+		queue_redraw()
+		
 		

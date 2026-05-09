@@ -3,5 +3,6 @@
 [ext_resource type="Script" uid="uid://u5i4dkguivrp" path="res://person.gd" id="1_0pife"]
 
 [node name="Person" type="Node2D" unique_id=1329247068]
+y_sort_enabled = true
 script = ExtResource("1_0pife")
 metadata/_custom_type_script = "uid://u5i4dkguivrp"

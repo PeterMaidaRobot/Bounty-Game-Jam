@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://2o10v7a646cl" path="res://main.gd" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://584nm6f4y54f" path="res://person.tscn" id="2_0xm2m"]
 
-[node name="Node2D" type="Node2D" unique_id=1702526141]
+[node name="Main" type="Node2D" unique_id=1702526141]
 script = ExtResource("1_ig7tw")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1770129135]
@@ -19,3 +19,9 @@ color = Color(0.6862745, 0.8666667, 0.8117647, 1)
 
 [node name="DummyPerson" parent="." unique_id=203893817 instance=ExtResource("2_0xm2m")]
 position = Vector2(100, 100)
+
+[node name="Y_Sorted_Sprites" type="Node2D" parent="." unique_id=1605844370]
+y_sort_enabled = true
+
+[node name="People" type="Node2D" parent="Y_Sorted_Sprites" unique_id=1822685249]
+y_sort_enabled = true

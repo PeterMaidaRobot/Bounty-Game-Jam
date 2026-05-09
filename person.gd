@@ -35,9 +35,52 @@ class_name Person extends Node2D
 @export_group("")
 
 
+
+var target : Vector2
+var speed : int = 10
+
+var has_eyebrows = true
+var has_moustache = true
+
 #var player_pos = Vector2(0, 0)
 
 const my_scene : PackedScene = preload("res://person.tscn")
+
+
+const EYE_COLORS = [
+	Color.WHITE,
+	Color.RED,
+	Color.DARK_BLUE,
+	Color.BLACK
+]
+
+const HEAD_COLORS = [
+	Color.YELLOW,
+	Color.ROSY_BROWN,
+	Color.SANDY_BROWN,
+	Color.SADDLE_BROWN,
+	Color.BLANCHED_ALMOND
+]
+
+const HAIR_COLORS = [
+	Color.WHITE,
+	Color.GRAY,
+	Color.INDIAN_RED,
+	Color.YELLOW,
+	Color.SADDLE_BROWN,
+	Color.BLACK,
+	Color.DARK_GREEN
+]
+
+const BODY_COLORS = [
+	Color.WHITE,
+	Color.BLUE_VIOLET,
+	Color.DARK_BLUE,
+	Color.BLACK,
+	Color.AQUAMARINE,
+	Color.DARK_CYAN,
+	Color.LIGHT_GREEN
+]
 
 
 
@@ -45,6 +88,9 @@ static func constructor(pos : Vector2) -> Person:
 	var person = my_scene.instantiate()
 	#person.player_pos = pos
 	person.position = pos
+	person.target = pos
+	person.randomize_colors()
+	person.randomize_facial_hair()
 	return person
 
 
@@ -174,15 +220,51 @@ func _draw_eyebrows(position : Vector2):
 func _draw_person(position : Vector2):
 	_draw_body(position)
 	_draw_head(position)
-	_draw_moustache(position + Vector2(0, 2))
+	if has_moustache:
+		_draw_moustache(position + Vector2(0, 2))
 	_draw_eyes(position)
-	_draw_eyebrows(position)
+	if has_eyebrows:
+		_draw_eyebrows(position)
 
 
 func _draw():
 	_draw_person(position)
 	#draw_circle(position, 2, Color.GREEN)
 	
-func _process(delta):
+	
+func _process(delta : float):
+	
+	# wander logic
+	if position.distance_to(target) < 1.0:
+		# pick a new target
+		target = Vector2(randi_range(0, 500), randi_range(0, 500))
+	else:
+		# keep moving to our target
+		position = position.move_toward(target, speed * delta)
+	
+	
 	queue_redraw()
 	
+	
+
+func randomize_colors():
+	var head_idx = randi_range(0, len(HEAD_COLORS) - 1)
+	head_color = HEAD_COLORS[head_idx]
+	
+	var hair_idx = randi_range(0, len(HAIR_COLORS) - 1)
+	eyebrow_color = HAIR_COLORS[hair_idx]
+	moustache_color = HAIR_COLORS[hair_idx]
+	
+	var body_idx = randi_range(0, len(BODY_COLORS) - 1)
+	body_color = BODY_COLORS[body_idx]
+		
+	var eyes_idx = randi_range(0, len(EYE_COLORS) - 1)
+	eye_color = EYE_COLORS[eyes_idx]
+
+func randomize_facial_hair():
+	if randf() < 0.4:
+		has_moustache = false
+	if randf() < 0.1:
+		has_eyebrows = false
+		
+		

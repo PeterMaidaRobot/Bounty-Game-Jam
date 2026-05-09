@@ -42,6 +42,7 @@ var target : Vector2
 var speed : int = 30 # 10 is a casual speed
 var full_name : String = "Bob Smith"
 var bounty : int = 0 # if the bounty is zero, they aren't a criminal
+var caught : bool = false
 
 var has_eyebrows = true
 var has_moustache = true
@@ -96,8 +97,17 @@ enum DRAW_TYPE { RECT, CIRCLE, ELLIPSE, POLYGON }
 enum FEATURE_TYPE { BODY, HEAD, MOUSTACHE, EYES, EYEBROWS }
 var feature_params = []
 
-const FIRST_NAME_OPTIONS = ["Alex", "Bob", "Charlie", "Dax", "Edward", "Felipe", "Greg", "Spencer"]
+const FIRST_NAME_OPTIONS = ["Alex", "Bob", "Charlie", "Clyde", "Dax", "Edward", "Felipe", "Greg", "Peter", "Spencer", "Zach"]
 const LAST_NAME_OPTIONS = ["Smith", "Long", "Wild", "Brown", "Wilson"]
+
+
+
+enum CRIME_TYPE { NONE, CAUGHT, STEAL_APPLE }
+var new_crime : CRIME_TYPE = CRIME_TYPE.NONE
+
+
+
+
 
 
 static func constructor(pos : Vector2) -> Person:
@@ -246,10 +256,36 @@ func randomize_facial_hair():
 
 
 func _on_area_2d_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
-	if Input.is_action_just_pressed("click"):
+	if Input.is_action_just_pressed("click") and not caught:
+		caught = true
 		print("clicked " + full_name + " with bounty of: " + str(bounty))
 		person_clicked.emit(self)
 		draw_enabled = false
 		queue_redraw()
 		
-		
+
+func commit_crime():
+	bounty += get_bounty_increase(new_crime)
+
+
+static func get_bounty_increase(crime : CRIME_TYPE):
+	var increase : int = 0
+	match crime:
+		CRIME_TYPE.NONE:
+			pass
+		CRIME_TYPE.CAUGHT:
+			pass
+		CRIME_TYPE.STEAL_APPLE:
+			increase = 100
+	return increase
+	
+	
+static func get_crime_string(crime : CRIME_TYPE):
+	var increase : int = get_bounty_increase(crime)
+	match crime:
+		CRIME_TYPE.NONE:
+			return "No Crime\nCommitted"
+		CRIME_TYPE.CAUGHT:
+			return ""
+		CRIME_TYPE.STEAL_APPLE:
+			return "Stole\nApple\n+$" + str(increase)

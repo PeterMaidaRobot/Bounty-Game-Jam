@@ -8,18 +8,6 @@
 [node name="Main" type="Node2D" unique_id=1702526141]
 script = ExtResource("1_ig7tw")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1770129135]
-visible = false
-
-[node name="ColorRect" type="ColorRect" parent="CanvasLayer" unique_id=16506923]
-visible = false
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.6862745, 0.8666667, 0.8117647, 1)
-
 [node name="Y_Sorted_Sprites" type="Node2D" parent="." unique_id=1605844370]
 y_sort_enabled = true
 
@@ -30,41 +18,84 @@ y_sort_enabled = true
 
 [node name="Posters" type="Node2D" parent="PosterOverlay" unique_id=1453599168]
 
-[node name="BeginButton" type="Button" parent="PosterOverlay" unique_id=1230127673]
+[node name="PosterOverlayControls" type="Control" parent="PosterOverlay" unique_id=102173008]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="BeginButton" type="Button" parent="PosterOverlay/PosterOverlayControls" unique_id=1230127673]
+layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = 902.0
-offset_top = 964.0
-offset_right = 1017.0
-offset_bottom = 1011.0
+offset_left = 882.0
+offset_top = 924.0
+offset_right = 997.0
+offset_bottom = 971.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_fonts/font = ExtResource("2_h2yge")
 theme_override_font_sizes/font_size = 32
 text = "BEGIN"
 
-[node name="DummyPerson" parent="." unique_id=203893817 instance=ExtResource("2_0xm2m")]
-position = Vector2(100, 100)
+[node name="DayLabel" type="Label" parent="PosterOverlay/PosterOverlayControls" unique_id=768489379]
+layout_mode = 0
+offset_left = 925.0
+offset_top = 37.0
+offset_right = 965.0
+offset_bottom = 80.0
+theme_override_fonts/font = ExtResource("4_1bvp3")
+theme_override_font_sizes/font_size = 36
 
-[node name="CatchLabel" type="Label" parent="." unique_id=1538146068]
+[node name="CriminalsLabel" type="Label" parent="PosterOverlay/PosterOverlayControls" unique_id=1644790069]
+layout_mode = 0
+offset_left = 856.0
+offset_top = 93.0
+offset_right = 1124.0
+offset_bottom = 127.0
+theme_override_fonts/font = ExtResource("4_1bvp3")
+theme_override_font_sizes/font_size = 28
+text = "Criminals in Town"
+
+[node name="GameWinLabel" type="Label" parent="PosterOverlay/PosterOverlayControls" unique_id=1113424263]
 visible = false
-offset_left = 860.0
-offset_top = 872.0
-offset_right = 1083.0
-offset_bottom = 930.0
+layout_mode = 0
+offset_left = 667.0
+offset_top = 428.0
+offset_right = 1313.0
+offset_bottom = 547.0
 theme_override_fonts/font = ExtResource("4_1bvp3")
 theme_override_font_sizes/font_size = 48
+text = "You Win!
+No Criminals left in town!"
+horizontal_alignment = 1
+
+[node name="DummyPerson" parent="." unique_id=203893817 instance=ExtResource("2_0xm2m")]
+visible = false
+position = Vector2(100, 100)
+
+[node name="JailIconOverlay" type="Node2D" parent="." unique_id=1847089184]
+
+[node name="CatchLabel" type="Label" parent="JailIconOverlay" unique_id=1538146068]
+visible = false
+offset_left = 56.0
+offset_top = 857.0
+offset_right = 279.0
+offset_bottom = 915.0
+theme_override_fonts/font = ExtResource("4_1bvp3")
+theme_override_font_sizes/font_size = 32
 text = "Caught x"
 
-[node name="CatchLabelTimer" type="Timer" parent="CatchLabel" unique_id=1762655126]
+[node name="CatchLabelTimer" type="Timer" parent="JailIconOverlay/CatchLabel" unique_id=1762655126]
+wait_time = 2.0
 
-[node name="JailIcons" type="Node2D" parent="." unique_id=1184847544]
+[node name="JailIcons" type="Node2D" parent="JailIconOverlay" unique_id=1184847544]
 position = Vector2(184, 969)
 
-[node name="EndDayButton" type="Button" parent="." unique_id=1075084938]
+[node name="EndDayButton" type="Button" parent="JailIconOverlay" unique_id=1075084938]
 offset_left = 26.0
 offset_top = 947.0
 offset_right = 104.0
@@ -74,6 +105,36 @@ theme_override_font_sizes/font_size = 28
 text = "End
 Day"
 
-[connection signal="pressed" from="PosterOverlay/BeginButton" to="." method="_on_begin_button_pressed"]
-[connection signal="timeout" from="CatchLabel/CatchLabelTimer" to="." method="_on_catch_label_timer_timeout"]
-[connection signal="pressed" from="EndDayButton" to="." method="end_day"]
+[node name="DayOverOverlay" type="Node2D" parent="." unique_id=1178398197]
+
+[node name="DayCompleteLabel" type="Label" parent="DayOverOverlay" unique_id=1622343282]
+offset_left = 807.0
+offset_top = 15.0
+offset_right = 1204.0
+offset_bottom = 73.0
+theme_override_fonts/font = ExtResource("4_1bvp3")
+theme_override_font_sizes/font_size = 48
+text = "Day 1 Complete"
+
+[node name="ArrestsTodayLabel" type="Label" parent="DayOverOverlay" unique_id=1405122996]
+offset_left = 859.0
+offset_top = 88.0
+offset_right = 1119.0
+offset_bottom = 131.0
+theme_override_fonts/font = ExtResource("4_1bvp3")
+theme_override_font_sizes/font_size = 36
+text = "Arrests Today"
+
+[node name="NextDayButton" type="Button" parent="DayOverOverlay" unique_id=1396580975]
+offset_left = 880.0
+offset_top = 914.0
+offset_right = 1056.0
+offset_bottom = 961.0
+theme_override_fonts/font = ExtResource("2_h2yge")
+theme_override_font_sizes/font_size = 32
+text = "NEXT DAY"
+
+[connection signal="pressed" from="PosterOverlay/PosterOverlayControls/BeginButton" to="." method="_on_begin_button_pressed"]
+[connection signal="timeout" from="JailIconOverlay/CatchLabel/CatchLabelTimer" to="." method="_on_catch_label_timer_timeout"]
+[connection signal="pressed" from="JailIconOverlay/EndDayButton" to="." method="end_day"]
+[connection signal="pressed" from="DayOverOverlay/NextDayButton" to="." method="start_day"]

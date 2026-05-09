@@ -5,11 +5,12 @@
 [ext_resource type="FontFile" uid="uid://bb7tm4nckig6j" path="res://fonts/Bookman Old Style Bold.ttf" id="3_g538a"]
 [ext_resource type="FontFile" uid="uid://ccru57xiyx2le" path="res://fonts/Bookman Old Style Regular.ttf" id="4_65yai"]
 [ext_resource type="Script" uid="uid://b7be02l8dj5ch" path="res://poster_head.gd" id="5_mp3sy"]
+[ext_resource type="Texture2D" uid="uid://clcm04rpbttk2" path="res://art/jail_cell.png" id="6_qe3sy"]
 
 [node name="Poster" type="Node2D" unique_id=811473367]
 script = ExtResource("1_ubgtn")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=374599314]
+[node name="PosterSprite" type="Sprite2D" parent="." unique_id=374599314]
 scale = Vector2(1, 1.097)
 texture = ExtResource("2_ubgtn")
 
@@ -38,10 +39,10 @@ text = "$100"
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=241910846]
 offset_left = -64.0
-offset_top = -80.0
+offset_top = -78.00001
 offset_right = -24.0
-offset_bottom = -40.0
-scale = Vector2(3.2712908, 3.2116168)
+offset_bottom = -38.000008
+scale = Vector2(3.3112895, 3.0916169)
 color = Color(0.09019608, 0.09019608, 0.09019608, 0.9254902)
 
 [node name="RewardLabel" type="Label" parent="." unique_id=9379618]
@@ -59,3 +60,34 @@ position = Vector2(0, -15)
 scale = Vector2(3, 3)
 script = ExtResource("5_mp3sy")
 metadata/_custom_type_script = "uid://b7be02l8dj5ch"
+
+[node name="JailSprite" type="Sprite2D" parent="." unique_id=9767238]
+visible = false
+position = Vector2(2, -15.000001)
+scale = Vector2(1.2692016, 1.2692016)
+texture = ExtResource("6_qe3sy")
+
+[node name="CaughtLabel" type="Label" parent="." unique_id=516619474]
+visible = false
+offset_left = -79.0
+offset_top = -35.0
+offset_right = 83.0
+offset_bottom = 8.0
+theme_override_colors/font_color = Color(0.13750008, 0.66, 0.03300001, 1)
+theme_override_fonts/font = ExtResource("3_g538a")
+theme_override_font_sizes/font_size = 36
+text = "CAUGHT!"
+
+[node name="CrimeLabel" type="Label" parent="." unique_id=1864387578]
+visible = false
+offset_left = -68.0
+offset_top = -60.0
+offset_right = 73.0
+offset_bottom = 33.0
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_g538a")
+theme_override_font_sizes/font_size = 24
+text = "Committed
+more
+crimes!"
+horizontal_alignment = 1

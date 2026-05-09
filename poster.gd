@@ -16,3 +16,15 @@ func draw_head(person : Person):
 	$BountyLabel.text = "$" + str(person.bounty)
 	$NameLabel.text = person.full_name
 	$PosterHead.draw_head(person)
+
+
+func show_jail():
+	$JailSprite.show()
+	$CaughtLabel.show()
+	
+func show_crime(crime : Person.CRIME_TYPE):
+	$CrimeLabel.text = Person.get_crime_string(crime)
+	$CrimeLabel.show()
+
+func get_name_label():
+	return $NameLabel.text

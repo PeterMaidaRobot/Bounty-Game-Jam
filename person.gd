@@ -37,9 +37,10 @@ class_name Person extends Node2D
 
 signal person_clicked(person)
 
+const MAX_SPEED : int = 100
 
 var target : Vector2
-var speed : int = 30 # 10 is a casual speed
+var speed : int = 100 #30 # 10 is a casual speed
 var full_name : String = "Bob Smith"
 var bounty : int = 0 # if the bounty is zero, they aren't a criminal
 var caught : bool = false
@@ -106,18 +107,23 @@ enum CRIME_TYPE { NONE, CAUGHT, STEAL_APPLE, ARSON }
 var new_crime : CRIME_TYPE = CRIME_TYPE.NONE
 
 
+var path : Array[Vector2]
+var path_node_idx : int = 0
 
 
 
 
-static func constructor(pos : Vector2) -> Person:
+
+static func constructor(path_points : Array[Vector2]) -> Person:
 	var person = my_scene.instantiate()
-	person.position = pos
-	person.target = pos
+	person.position = path_points[0]
+	person.target = path_points[1]
 	person.randomize_colors()
 	person.randomize_facial_hair()
 	person.set_initial_features()	
 	person.full_name = FIRST_NAME_OPTIONS.pick_random() + " " + LAST_NAME_OPTIONS.pick_random()
+	person.path = path_points
+	person.speed = MAX_SPEED * randf_range(0.5, 1)
 	return person
 
 
@@ -127,6 +133,11 @@ func _ready():
 	# We draw the person once
 	queue_redraw()
 
+
+func restart_path():
+	position = path[0]
+	path_node_idx = 1
+	target = path[path_node_idx]
 
 
 
@@ -218,17 +229,29 @@ func _draw_feature_shapes():
 func _draw():
 	if draw_enabled:
 		_draw_feature_shapes()
+		for point in path:
+			draw_circle(point - position, 10, Color.RED)
 
 
 func _process(delta : float):
-	
+	queue_redraw()
+
+func update_movement(delta : float) -> bool:
+	var delete_me : bool = false
 	# wander logic
 	if position.distance_to(target) < 1.0:
-		# pick a new target
-		target = Vector2(randi_range(0, 1000), randi_range(0, 1000))
+		if path_node_idx >= len(path):
+			# End of the path
+			delete_me = true
+		else:
+			# Grab the next target in the list
+			target = path[path_node_idx]
+			path_node_idx += 1
 	else:
 		# keep moving to our target
 		position = position.move_toward(target, speed * delta)
+		
+	return delete_me
 
 
 

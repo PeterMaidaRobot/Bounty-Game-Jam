@@ -3,10 +3,30 @@
 [ext_resource type="Script" uid="uid://2o10v7a646cl" path="res://main.gd" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://584nm6f4y54f" path="res://person.tscn" id="2_0xm2m"]
 [ext_resource type="FontFile" uid="uid://ccru57xiyx2le" path="res://fonts/Bookman Old Style Regular.ttf" id="2_h2yge"]
+[ext_resource type="Texture2D" uid="uid://bwk4axvkw8vc5" path="res://art/background.png" id="2_lquwl"]
+[ext_resource type="PackedScene" uid="uid://c2pgkxc4xburm" path="res://house.tscn" id="3_7mycd"]
 [ext_resource type="FontFile" uid="uid://bb7tm4nckig6j" path="res://fonts/Bookman Old Style Bold.ttf" id="4_1bvp3"]
 
 [node name="Main" type="Node2D" unique_id=1702526141]
 script = ExtResource("1_ig7tw")
+
+[node name="BackgroundSprite" type="Sprite2D" parent="." unique_id=1733915651]
+position = Vector2(960, 540)
+texture = ExtResource("2_lquwl")
+
+[node name="Houses" type="Node2D" parent="." unique_id=33866670]
+
+[node name="House" parent="Houses" unique_id=1540050942 instance=ExtResource("3_7mycd")]
+position = Vector2(841, 423)
+
+[node name="House2" parent="Houses" unique_id=598039067 instance=ExtResource("3_7mycd")]
+position = Vector2(368, 432)
+
+[node name="House3" parent="Houses" unique_id=1162941226 instance=ExtResource("3_7mycd")]
+position = Vector2(1310, 427)
+
+[node name="House4" parent="Houses" unique_id=770760895 instance=ExtResource("3_7mycd")]
+position = Vector2(1769, 404)
 
 [node name="Y_Sorted_Sprites" type="Node2D" parent="." unique_id=1605844370]
 y_sort_enabled = true
@@ -133,6 +153,41 @@ offset_bottom = 961.0
 theme_override_fonts/font = ExtResource("2_h2yge")
 theme_override_font_sizes/font_size = 32
 text = "NEXT DAY"
+
+[node name="PathingPoints" type="Node2D" parent="." unique_id=1083232553]
+
+[node name="House1Point" type="Marker2D" parent="PathingPoints" unique_id=1153765603]
+position = Vector2(357, 556)
+
+[node name="Path1Point" type="Marker2D" parent="PathingPoints" unique_id=1365510343]
+position = Vector2(358, 680)
+
+[node name="Path2Point" type="Marker2D" parent="PathingPoints" unique_id=628994785]
+position = Vector2(596, 677)
+
+[node name="Path3Point" type="Marker2D" parent="PathingPoints" unique_id=626665920]
+position = Vector2(834, 680)
+
+[node name="House2Point" type="Marker2D" parent="PathingPoints" unique_id=331654992]
+position = Vector2(838, 542)
+
+[node name="Path4Point" type="Marker2D" parent="PathingPoints" unique_id=1507073717]
+position = Vector2(1078, 676)
+
+[node name="Path5Point" type="Marker2D" parent="PathingPoints" unique_id=1350186335]
+position = Vector2(1314, 669)
+
+[node name="House3Point" type="Marker2D" parent="PathingPoints" unique_id=2023309393]
+position = Vector2(1307, 533)
+
+[node name="Path6Point" type="Marker2D" parent="PathingPoints" unique_id=1167218915]
+position = Vector2(1557, 659)
+
+[node name="Path7Point" type="Marker2D" parent="PathingPoints" unique_id=1349017978]
+position = Vector2(1770, 668)
+
+[node name="House4Point" type="Marker2D" parent="PathingPoints" unique_id=846787425]
+position = Vector2(1762, 514)
 
 [connection signal="pressed" from="PosterOverlay/PosterOverlayControls/BeginButton" to="." method="_on_begin_button_pressed"]
 [connection signal="timeout" from="JailIconOverlay/CatchLabel/CatchLabelTimer" to="." method="_on_catch_label_timer_timeout"]

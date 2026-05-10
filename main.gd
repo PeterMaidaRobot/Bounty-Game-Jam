@@ -10,6 +10,27 @@ var day : int = 0
 
 var people : Array[Person] = []
 
+enum GAME_STATE { POSTERS, CATCHING, STATS }
+var game_state : GAME_STATE
+
+
+enum PATH_OPTIONS {
+			HOUSE1TO2,
+			HOUSE1TO3,
+			HOUSE1TO4,
+			
+			HOUSE2TO1,
+			HOUSE2TO3,
+			HOUSE2TO4,
+			
+			HOUSE3TO1,
+			HOUSE3TO2,
+			HOUSE3TO4,
+			
+			HOUSE4TO1,
+			HOUSE4TO2,
+			HOUSE4TO3
+}
 
 func _ready():
 	
@@ -17,24 +38,154 @@ func _ready():
 	$JailIconOverlay.hide()
 	
 	## Generate a lot of people!!!
-	for i in range(8):
-		var player_pos = Vector2(randi_range(0, 1000), randi_range(0, 1000))
-		var person : Person = Person.constructor(player_pos)
+	for i in range(10):
+		var person : Person = Person.constructor(get_random_path())
 		
 		# When this person is clicked, we need to register back to this game engine
 		person.person_clicked.connect(_on_person_clicked)
 		
-		person.bounty = randi_range(0, 2) * 100
+		person.bounty = 1
+		#person.bounty = randi_range(0, 2) * 100
+		#print(person.path)
 		
 		people.append(person)
 		
 	start_day()
 
 
+func _process(delta: float) -> void:
+	var end_day : bool = false
+	if game_state == GAME_STATE.CATCHING:
+		for person in people:
+			var delete_person : bool = person.update_movement(delta)
+			if delete_person:
+				for child in $Y_Sorted_Sprites/People.get_children():
+					if child == person:
+						$Y_Sorted_Sprites/People.remove_child(child)
+						# if this was the last person, end the day # TODO this should be more scheduled... what if they click before they end? maybe always have more than the number of jail cells...
+						if $Y_Sorted_Sprites/People.get_child_count() == 0:
+							end_day = true
+						break
+	if end_day:
+		end_day()
+
+
+
+'''
+Get a random point in a circle of max_radius
+'''
+func get_random_vector(max_radius):
+	var angle = randf_range(0, 2*PI)
+	var magnitude = randf_range(0, max_radius)
+	return Vector2.RIGHT.rotated(angle) * magnitude
+
+
+func get_random_path() -> Array[Vector2]: # TODO please actually use a graphing library...
+	const MAX_RADIUS = 100
+	var points : Array[Vector2]	
+	var path_option : PATH_OPTIONS = PATH_OPTIONS.values().pick_random()
+	
+	match path_option:
+		PATH_OPTIONS.HOUSE1TO2:
+			points = [$PathingPoints/House1Point.position,
+						$PathingPoints/Path1Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path2Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path3Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/House2Point.position]
+		PATH_OPTIONS.HOUSE1TO3:
+			points = [$PathingPoints/House1Point.position,
+						$PathingPoints/Path1Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path2Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path3Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path4Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path5Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/House3Point.position]
+		PATH_OPTIONS.HOUSE1TO4:
+			points = [$PathingPoints/House1Point.position,
+						$PathingPoints/Path1Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path2Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path3Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path4Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path5Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path6Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path7Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/House3Point.position]
+		PATH_OPTIONS.HOUSE2TO1:
+			points = [$PathingPoints/House2Point.position,
+						$PathingPoints/Path3Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path2Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path1Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/House1Point.position]
+		PATH_OPTIONS.HOUSE2TO3:
+			points = [$PathingPoints/House2Point.position,
+						$PathingPoints/Path3Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path4Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path5Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/House3Point.position]
+		PATH_OPTIONS.HOUSE2TO4:
+			points = [$PathingPoints/House2Point.position,
+						$PathingPoints/Path3Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path4Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path5Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path6Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path7Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/House4Point.position]
+		PATH_OPTIONS.HOUSE3TO1:
+			points = [$PathingPoints/House3Point.position,
+						$PathingPoints/Path5Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path4Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path3Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path2Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path1Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/House1Point.position]
+		PATH_OPTIONS.HOUSE3TO2:
+			points = [$PathingPoints/House3Point.position,
+						$PathingPoints/Path5Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path4Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path3Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/House2Point.position]
+		PATH_OPTIONS.HOUSE3TO4:
+			points = [$PathingPoints/House3Point.position,
+						$PathingPoints/Path5Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path6Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path7Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/House4Point.position]
+		PATH_OPTIONS.HOUSE4TO1:
+			points = [$PathingPoints/House4Point.position,
+						$PathingPoints/Path7Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path6Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path5Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path4Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path3Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path2Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path1Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/House1Point.position]
+		PATH_OPTIONS.HOUSE4TO2:
+			points = [$PathingPoints/House4Point.position,
+						$PathingPoints/Path7Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path6Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path5Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path4Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path3Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/House2Point.position]
+		PATH_OPTIONS.HOUSE4TO3:
+			points = [$PathingPoints/House4Point.position,
+						$PathingPoints/Path7Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path6Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path5Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/House3Point.position]
+		_:
+			print("Path option node found: " + PATH_OPTIONS.keys()[path_option])
+			
+			
+	return points
+
+
+
+
 func add_people_to_scene():
-	print(people)
 	for person in people:
-		print("adding " + person.full_name)
+		person.restart_path()
 		$Y_Sorted_Sprites/People.add_child(person)
 
 
@@ -95,7 +246,6 @@ func clear_people_from_scene():
 
 func remove_arrested_people():
 	for arrested_person in arrested_people:
-		print("removing " + arrested_person.full_name)
 		people.remove_at(people.find(arrested_person)) # unsafe, could be -1
 
 
@@ -116,6 +266,8 @@ func start_day():
 	generate_wanted_posters()
 	
 	regenerate_jail_icons()
+	
+	game_state = GAME_STATE.POSTERS
 
 '''
 The end day function will show the stats before moving to the next overlay
@@ -153,6 +305,8 @@ func end_day():
 	for person in people:
 		person.commit_crime()
 		# TODO burn a building if the crime is ARSON
+		
+	game_state = GAME_STATE.STATS
 
 
 '''
@@ -163,6 +317,8 @@ func _on_begin_button_pressed() -> void:
 	$PosterOverlay.hide()
 	add_people_to_scene()
 	$JailIconOverlay.show()
+	
+	game_state = GAME_STATE.CATCHING
 
 
 func _on_person_clicked(person : Person):

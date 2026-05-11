@@ -37,8 +37,9 @@ func _ready():
 	$DayOverOverlay.hide()
 	$JailIconOverlay.hide()
 	
+	Person.generate_person_index_options()
 	## Generate a lot of people!!!
-	for i in range(10):
+	for i in range(32):
 		var person : Person = Person.constructor(get_random_path())
 		
 		# When this person is clicked, we need to register back to this game engine
@@ -50,6 +51,7 @@ func _ready():
 		
 		people.append(person)
 		
+	Person.feature_tree_root.print()
 	start_day()
 
 

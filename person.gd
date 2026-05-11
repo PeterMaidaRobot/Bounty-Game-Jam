@@ -7,6 +7,7 @@ class_name Person extends Node2D
 @export var body_color : Color = Color.SADDLE_BROWN
 
 @export_group("Eyebrow")
+@export var has_eyebrows : bool = true
 @export var eyebrow_width : int = 17
 @export var eyebrow_height : int = 7
 @export var eyebrow_spacing : int = 10
@@ -21,6 +22,7 @@ class_name Person extends Node2D
 @export var eye_color : Color = Color.BLACK
 
 @export_group("Moustache")
+@export var has_moustache : bool = true
 @export var moustache_radius : int = 8
 @export var moustache_endpoint_ratio : float = 2
 @export var moustache_bridge_ratio : float = 1.5
@@ -45,8 +47,6 @@ var full_name : String = "Bob Smith"
 var bounty : int = 0 # if the bounty is zero, they aren't a criminal
 var caught : bool = false
 
-var has_eyebrows = true
-var has_moustache = true
 
 
 const my_scene : PackedScene = preload("res://person.tscn")
@@ -61,36 +61,36 @@ var eyes_color_idx : int = 0
 
 const EYE_COLORS = [
 	Color.WHITE,
-	Color.RED,
-	Color.DARK_BLUE,
+	#Color.RED,
+	#Color.DARK_BLUE,
 	Color.BLACK
 ]
 
 const HEAD_COLORS = [
 	Color.YELLOW,
-	Color.ROSY_BROWN,
-	Color.SANDY_BROWN,
-	Color.SADDLE_BROWN,
+	#Color.ROSY_BROWN,
+	#Color.SANDY_BROWN,
+	#Color.SADDLE_BROWN,
 	Color.BLANCHED_ALMOND
 ]
 
 const HAIR_COLORS = [
 	Color.WHITE,
-	Color.GRAY,
-	Color.INDIAN_RED,
-	Color.YELLOW,
-	Color.SADDLE_BROWN,
-	Color.BLACK,
+	#Color.GRAY,
+	#Color.INDIAN_RED,
+	#Color.YELLOW,
+	#Color.SADDLE_BROWN,
+	#Color.BLACK,
 	Color.DARK_GREEN
 ]
 
 const BODY_COLORS = [
 	Color.WHITE,
-	Color.BLUE_VIOLET,
-	Color.DARK_BLUE,
-	Color.BLACK,
-	Color.AQUAMARINE,
-	Color.DARK_CYAN,
+	#Color.BLUE_VIOLET,
+	#Color.DARK_BLUE,
+	#Color.BLACK,
+	#Color.AQUAMARINE,
+	#Color.DARK_CYAN,
 	Color.LIGHT_GREEN
 ]
 
@@ -112,26 +112,220 @@ var path_node_idx : int = 0
 
 
 
+static var available_name_indices = [] #: Array[Dictionary[String, int]]
+const FIRST_NAME_IDX_KEY : String = "first_name_idx"
+const LAST_NAME_IDX_KEY : String = "last_name_idx"
+
+const HEAD_COLOR_KEY : String = "head_color"
+const EYE_COLOR_KEY : String = "eye_color"
+const HAIR_COLOR_KEY : String = "hair_color"
+const MOUSTACHE_TYPE_KEY : String = "moustache_type"
+const EYEBROW_TYPE_KEY : String = "eyebrow_type"
+
+static var feature_tree_root
+
+# Create a treenode structure to house the feature options
+enum TREE_NODE_TYPE { ROOT, COLOR, BOOL } # Todo might not be needed, might be replaced with the dictionary type keys
+enum MOUSTACHE_TYPE { NONE, THICK }
+enum EYEBROW_TYPE { NONE, THICK }
+class TreeNode:
+	var children : Array[TreeNode]
+	var weight : int = 1  # The weight will default to 1 unless otherwise overridden
+	var key : String
+	var value # this might be a color, moustache_type enum, or eyebrow_type enum dynamic type
+	
+	func _init(key : String, value) -> void:
+		self.key = key
+		self.value = value
+	
+	func get_children():
+		return children
+	
+	#func select_child():
+		## if this entry is the bottom of the tree, it will remove itself as it gets removed?
+		#pass
+	
+	func print(depth=0):
+		var s : String = ""
+		for i in range(depth):
+			s = s + "-"
+		print(s + key + " " + str(value) + " (weight " + str(weight) +") has:")
+		for child in children:
+			child.print(depth+1)
+		
+	
 
 
 static func constructor(path_points : Array[Vector2]) -> Person:
 	var person = my_scene.instantiate()
 	person.position = path_points[0]
 	person.target = path_points[1]
-	person.randomize_colors()
-	person.randomize_facial_hair()
-	person.set_initial_features()	
-	person.full_name = FIRST_NAME_OPTIONS.pick_random() + " " + LAST_NAME_OPTIONS.pick_random()
+	
+	person.generate_unique_person()
+	person.set_initial_features()
+	
 	person.path = path_points
 	person.speed = MAX_SPEED * randf_range(0.5, 1)
 	return person
 
 
 
+
+static func _get_eyebrow_type_children():
+	var eyebrow_type_children : Array[TreeNode] = []
+	for eyebrow_type in EYEBROW_TYPE:
+		var new_eyebrow_node = TreeNode.new(EYEBROW_TYPE_KEY, eyebrow_type)
+		#  <---  no children to add here yet
+		eyebrow_type_children.append(new_eyebrow_node)
+	return eyebrow_type_children
+
+
+static func _get_moustache_type_children():
+	var moustache_type_children : Array[TreeNode] = []
+	for moustache_type in MOUSTACHE_TYPE:
+		var new_moustache_node = TreeNode.new(MOUSTACHE_TYPE_KEY, moustache_type)
+		new_moustache_node.children = _get_eyebrow_type_children()
+		moustache_type_children.append(new_moustache_node)
+	return moustache_type_children
+
+
+static func _get_hair_color_children():
+	var hair_color_children : Array[TreeNode] = []
+	for hair_color in HAIR_COLORS:
+		var new_hair_node = TreeNode.new(HAIR_COLOR_KEY, hair_color)
+		new_hair_node.children = _get_moustache_type_children()
+		hair_color_children.append(new_hair_node)
+	return hair_color_children
+
+
+static func _get_eye_color_children():
+	var eye_color_children : Array[TreeNode] = []
+	for eye_color in EYE_COLORS:
+		var new_eye_node = TreeNode.new(EYE_COLOR_KEY, eye_color)
+		new_eye_node.children = _get_hair_color_children()
+		eye_color_children.append(new_eye_node)
+	return eye_color_children
+
+
+static func _get_head_color_children():
+	var head_color_children : Array[TreeNode] = []
+	for head_color in HEAD_COLORS:
+		var new_head_node = TreeNode.new(HEAD_COLOR_KEY, head_color)
+		new_head_node.children = _get_eye_color_children()
+		head_color_children.append(new_head_node)
+	return head_color_children
+
+'''
+Generates the main tree that will have leaves removed as options become inaccessible
+'''
+static func generate_person_index_options():
+	# Generate the name options
+	for first_name_idx in range(len(FIRST_NAME_OPTIONS)):
+		for last_name_idx in range(len(LAST_NAME_OPTIONS)):
+			Person.available_name_indices.append({FIRST_NAME_IDX_KEY : first_name_idx,
+										   LAST_NAME_IDX_KEY : last_name_idx})
+	
+	# Generate the feature options
+	feature_tree_root = TreeNode.new("root", null)
+	feature_tree_root.children = _get_head_color_children()
+	feature_tree_root.print()
+
+
+'''
+ROOT
+-> HEAD COLOR
+----> EYE COLOR
+-------> HAIR COLOR
+----------> MOUSTACHE TYPE
+--------------> EYEBROW TYPE
+'''
+
+
+'''
+Use the feature tree to generate an available option, and remove it from the tree
+'''
+static func get_random_feature_set(node): # (make a person)
+	
+	# Find out what child to use via the weighting
+	# Weighted is {0->idx, 1->idx, ...}
+	var weighted = {}
+	var total = 0
+	for child_idx in range(len(node.children)):
+		var child = node.children[child_idx]
+		for i in range(child.weight):
+			weighted[total] = child_idx
+			total += 1
+	
+	var rand_idx = randi_range(0, total - 1)
+	var child_idx = weighted[rand_idx]
+	var child = node.children[child_idx]
+	
+	var feature_dict = {}
+	# recursively get the rest of this dictionary, child
+	if len(child.children) > 0:
+		feature_dict = get_random_feature_set(child)
+	
+	# Delete the child if there's no leaves under it, but check after it's grandchild may have deleted some
+	if len(child.children) == 0:
+		node.children.remove_at(child_idx)
+	
+	feature_dict[child.key] = child.value
+	
+	
+	return feature_dict
+
+
+
 func _ready():
-	set_initial_features()
+	set_initial_features() # set this here also for ones we make in the editor
 	# We draw the person once
 	queue_redraw()
+
+
+func generate_unique_person():
+	
+	if len(available_name_indices) == 0:
+		print("ERROR: no more name options!")
+		full_name = "<null>"
+	else:
+		var available_name_idx = randi_range(0, len(available_name_indices) - 1)
+		var first_name : String = FIRST_NAME_OPTIONS[available_name_indices[available_name_idx][FIRST_NAME_IDX_KEY]]
+		var last_name : String = LAST_NAME_OPTIONS[available_name_indices[available_name_idx][LAST_NAME_IDX_KEY]]
+		full_name = first_name + " " + last_name
+		# remove this option from those available
+		available_name_indices.remove_at(available_name_idx)
+	
+	
+	var feature_set
+	if len(feature_tree_root.children) > 0:
+		feature_set = get_random_feature_set(feature_tree_root)
+		print(feature_set)
+		#feature_tree_root.print()
+	else:
+		print("ERROR: no other options for character generation!")
+		# Make a default feature set in this error case to not crash
+		feature_set = {
+			MOUSTACHE_TYPE_KEY : MOUSTACHE_TYPE.NONE,
+			EYEBROW_TYPE_KEY : EYEBROW_TYPE.NONE,
+			HEAD_COLOR_KEY : HEAD_COLORS[0],
+			HAIR_COLOR_KEY : HAIR_COLORS[0],
+			EYE_COLOR_KEY : EYE_COLORS[0]
+		}
+	
+	
+	has_moustache = MOUSTACHE_TYPE.get(feature_set[MOUSTACHE_TYPE_KEY]) != MOUSTACHE_TYPE.NONE
+	has_eyebrows = EYEBROW_TYPE.get(feature_set[EYEBROW_TYPE_KEY]) != EYEBROW_TYPE.NONE
+	
+	head_color = feature_set[HEAD_COLOR_KEY]
+	eyebrow_color = feature_set[HAIR_COLOR_KEY]
+	moustache_color = feature_set[HAIR_COLOR_KEY]
+	eye_color = feature_set[EYE_COLOR_KEY]
+	
+	
+	# Body clothes color can overlap, we only care about the face for uniqueness
+	body_color_idx = randi_range(0, len(BODY_COLORS) - 1)
+	body_color = BODY_COLORS[body_color_idx]
+
 
 
 func restart_path():
@@ -234,7 +428,7 @@ func _draw():
 
 
 func _process(delta : float):
-	queue_redraw()
+	queue_redraw() # I only use this for debug, this doesn't need to be here
 
 func update_movement(delta : float) -> bool:
 	var delete_me : bool = false
@@ -253,29 +447,6 @@ func update_movement(delta : float) -> bool:
 		
 	return delete_me
 
-
-
-func randomize_colors():
-	head_color_idx = randi_range(0, len(HEAD_COLORS) - 1)
-	head_color = HEAD_COLORS[head_color_idx]
-	
-	hair_color_idx = randi_range(0, len(HAIR_COLORS) - 1)
-	eyebrow_color = HAIR_COLORS[hair_color_idx]
-	moustache_color = HAIR_COLORS[hair_color_idx]
-	
-	body_color_idx = randi_range(0, len(BODY_COLORS) - 1)
-	body_color = BODY_COLORS[body_color_idx]
-		
-	eyes_color_idx = randi_range(0, len(EYE_COLORS) - 1)
-	eye_color = EYE_COLORS[eyes_color_idx]
-
-
-func randomize_facial_hair():
-	if randf() < 0.4:
-		has_moustache = false
-	if randf() < 0.1:
-		has_eyebrows = false
-		
 
 
 func _on_area_2d_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:

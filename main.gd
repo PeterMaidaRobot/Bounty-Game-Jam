@@ -39,19 +39,19 @@ func _ready():
 	
 	Person.generate_person_index_options()
 	## Generate a lot of people!!!
-	for i in range(32):
+	for i in range(24):
 		var person : Person = Person.constructor(get_random_path())
 		
 		# When this person is clicked, we need to register back to this game engine
 		person.person_clicked.connect(_on_person_clicked)
 		
-		person.bounty = 1
-		#person.bounty = randi_range(0, 2) * 100
+		#person.bounty = 1
+		person.bounty = randi_range(0, 2) * 100
 		#print(person.path)
 		
 		people.append(person)
 		
-	Person.feature_tree_root.print()
+	#Person.feature_tree_root.print()
 	start_day()
 
 
@@ -84,7 +84,7 @@ func get_random_vector(max_radius):
 
 func get_random_path() -> Array[Vector2]: # TODO please actually use a graphing library...
 	const MAX_RADIUS = 100
-	var points : Array[Vector2]	
+	var points : Array[Vector2]
 	var path_option : PATH_OPTIONS = PATH_OPTIONS.values().pick_random()
 	
 	match path_option:

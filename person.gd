@@ -61,36 +61,42 @@ var eyes_color_idx : int = 0
 
 const EYE_COLORS = [
 	Color.WHITE,
-	#Color.RED,
-	#Color.DARK_BLUE,
-	Color.BLACK
+	Color.RED,
+	Color.DARK_BLUE,
+	Color.BLACK,
+	Color.WEB_GREEN
 ]
 
 const HEAD_COLORS = [
-	Color.YELLOW,
-	#Color.ROSY_BROWN,
-	#Color.SANDY_BROWN,
+	#Color.YELLOW,
+	Color.ROSY_BROWN,
+	Color.SANDY_BROWN,
 	#Color.SADDLE_BROWN,
-	Color.BLANCHED_ALMOND
+	Color.BLANCHED_ALMOND,
+	Color.SALMON,
+	Color.PERU,
+	Color.SIENNA
 ]
 
 const HAIR_COLORS = [
 	Color.WHITE,
-	#Color.GRAY,
-	#Color.INDIAN_RED,
-	#Color.YELLOW,
-	#Color.SADDLE_BROWN,
-	#Color.BLACK,
-	Color.DARK_GREEN
+	Color.GRAY,
+	Color.INDIAN_RED,
+	Color.YELLOW,
+	Color.SADDLE_BROWN,
+	Color.BLACK,
+	Color.DARK_GREEN,
+	Color.HOT_PINK,
+	Color.DARK_BLUE
 ]
 
 const BODY_COLORS = [
 	Color.WHITE,
-	#Color.BLUE_VIOLET,
-	#Color.DARK_BLUE,
-	#Color.BLACK,
-	#Color.AQUAMARINE,
-	#Color.DARK_CYAN,
+	Color.BLUE_VIOLET,
+	Color.DARK_BLUE,
+	Color.BLACK,
+	Color.AQUAMARINE,
+	Color.DARK_CYAN,
 	Color.LIGHT_GREEN
 ]
 
@@ -116,18 +122,17 @@ static var available_name_indices = [] #: Array[Dictionary[String, int]]
 const FIRST_NAME_IDX_KEY : String = "first_name_idx"
 const LAST_NAME_IDX_KEY : String = "last_name_idx"
 
+static var feature_tree_root
 const HEAD_COLOR_KEY : String = "head_color"
 const EYE_COLOR_KEY : String = "eye_color"
 const HAIR_COLOR_KEY : String = "hair_color"
 const MOUSTACHE_TYPE_KEY : String = "moustache_type"
 const EYEBROW_TYPE_KEY : String = "eyebrow_type"
 
-static var feature_tree_root
-
-# Create a treenode structure to house the feature options
-enum TREE_NODE_TYPE { ROOT, COLOR, BOOL } # Todo might not be needed, might be replaced with the dictionary type keys
 enum MOUSTACHE_TYPE { NONE, THICK }
 enum EYEBROW_TYPE { NONE, THICK }
+
+# Create a treenode structure to house the feature options
 class TreeNode:
 	var children : Array[TreeNode]
 	var weight : int = 1  # The weight will default to 1 unless otherwise overridden
@@ -137,13 +142,6 @@ class TreeNode:
 	func _init(key : String, value) -> void:
 		self.key = key
 		self.value = value
-	
-	func get_children():
-		return children
-	
-	#func select_child():
-		## if this entry is the bottom of the tree, it will remove itself as it gets removed?
-		#pass
 	
 	func print(depth=0):
 		var s : String = ""
@@ -176,6 +174,11 @@ static func _get_eyebrow_type_children():
 	for eyebrow_type in EYEBROW_TYPE:
 		var new_eyebrow_node = TreeNode.new(EYEBROW_TYPE_KEY, eyebrow_type)
 		#  <---  no children to add here yet
+		match EYEBROW_TYPE.get(eyebrow_type):
+			EYEBROW_TYPE.NONE:
+				new_eyebrow_node.weight = 1
+			EYEBROW_TYPE.THICK:
+				new_eyebrow_node.weight = 4
 		eyebrow_type_children.append(new_eyebrow_node)
 	return eyebrow_type_children
 
@@ -185,6 +188,11 @@ static func _get_moustache_type_children():
 	for moustache_type in MOUSTACHE_TYPE:
 		var new_moustache_node = TreeNode.new(MOUSTACHE_TYPE_KEY, moustache_type)
 		new_moustache_node.children = _get_eyebrow_type_children()
+		match MOUSTACHE_TYPE.get(moustache_type):
+			MOUSTACHE_TYPE.NONE:
+				new_moustache_node.weight = 2
+			MOUSTACHE_TYPE.THICK:
+				new_moustache_node.weight = 3
 		moustache_type_children.append(new_moustache_node)
 	return moustache_type_children
 
@@ -228,7 +236,7 @@ static func generate_person_index_options():
 	# Generate the feature options
 	feature_tree_root = TreeNode.new("root", null)
 	feature_tree_root.children = _get_head_color_children()
-	feature_tree_root.print()
+	#feature_tree_root.print()
 
 
 '''
@@ -299,8 +307,9 @@ func generate_unique_person():
 	var feature_set
 	if len(feature_tree_root.children) > 0:
 		feature_set = get_random_feature_set(feature_tree_root)
-		print(feature_set)
+		#print(feature_set)
 		#feature_tree_root.print()
+		# TODO there's a bug with bald people having different hair colors but you can't tell!! I rigged the probablities to make it unlikely...
 	else:
 		print("ERROR: no other options for character generation!")
 		# Make a default feature set in this error case to not crash

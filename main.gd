@@ -1,7 +1,9 @@
 extends Node2D
 
 
-const MAX_JAIL_CELLS : int = 4
+const JAIL_CELL_SPACING = 120
+const MAX_JAIL_CELLS : int = 8
+var num_jail_cells : int = 4
 var num_full_cells : int = 0
 var arrested_people : Array[Person] = []
 
@@ -12,6 +14,8 @@ var people : Array[Person] = []
 
 enum GAME_STATE { POSTERS, CATCHING, STATS }
 var game_state : GAME_STATE
+
+var player_money = 0
 
 
 enum PATH_OPTIONS {
@@ -404,8 +408,7 @@ func regenerate_jail_icons():
 		child.queue_free()
 	
 	# Generate empty jail cell icons
-	const JAIL_CELL_SPACING = 120
-	for i in range(MAX_JAIL_CELLS):
+	for i in range(num_jail_cells):
 		var jail_icon = JailIcon.constructor(Vector2(JAIL_CELL_SPACING * i, 0))
 		$JailIconOverlay/JailIcons.add_child(jail_icon)
 
@@ -482,6 +485,14 @@ func end_day():
 
 
 '''
+Updates the value and the label
+'''
+func add_player_money(amount):
+	player_money += amount
+	$JailIconOverlay/MoneyLabel.text = "$" + str(player_money)
+
+
+'''
 The BEGIN button is pressed when starting a new day
 '''
 func _on_begin_button_pressed() -> void:
@@ -499,17 +510,44 @@ func _on_person_clicked(person : Person):
 	$JailIconOverlay/CatchLabel/CatchLabelTimer.stop() # reassure it is off to prevent a race-condition turning it off
 	$JailIconOverlay/CatchLabel.show()
 	$JailIconOverlay/CatchLabel/CatchLabelTimer.start()
+	add_player_money(person.bounty)
 	
 	# Guard against overflow
-	if num_full_cells < MAX_JAIL_CELLS:
+	if num_full_cells < num_jail_cells:
 		$JailIconOverlay/JailIcons.get_child(num_full_cells).add_person(person)
 		num_full_cells += 1
 		arrested_people.append(person)
 	
-	if num_full_cells == MAX_JAIL_CELLS:
+	if num_full_cells == num_jail_cells:
 		print("full cells!")
 		end_day()
 
 
 func _on_catch_label_timer_timeout() -> void:
 	$JailIconOverlay/CatchLabel.hide()
+
+
+func _on_buy_cell_button_pressed() -> void:
+	const CELL_COST : int = 500
+	
+	# Check they can buy it
+	if player_money >= CELL_COST:
+		add_player_money(-1 * CELL_COST)
+		
+	
+		var jail_icon = JailIcon.constructor(Vector2(JAIL_CELL_SPACING * num_jail_cells, 0))
+		$JailIconOverlay/JailIcons.add_child(jail_icon)
+		
+		$JailIconOverlay/BuyCellButton.position += Vector2(JAIL_CELL_SPACING, 0)
+		
+		num_jail_cells += 1
+		
+		if num_jail_cells >= MAX_JAIL_CELLS:
+			$JailIconOverlay/BuyCellButton.hide()
+	else:
+		# Re-purpose the catch label to give feedback to the player
+		$JailIconOverlay/CatchLabel.text = "Not enough money to buy cell!"
+		$JailIconOverlay/CatchLabel/CatchLabelTimer.stop() # reassure it is off to prevent a race-condition turning it off
+		$JailIconOverlay/CatchLabel.show()
+		$JailIconOverlay/CatchLabel/CatchLabelTimer.start()
+	

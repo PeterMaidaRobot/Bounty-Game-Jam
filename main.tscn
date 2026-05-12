@@ -214,6 +214,26 @@ theme_override_font_sizes/font_size = 28
 text = "End
 Day"
 
+[node name="MoneyLabel" type="Label" parent="JailIconOverlay" unique_id=1371064802]
+offset_left = 24.0
+offset_top = 911.0
+offset_right = 64.0
+offset_bottom = 940.0
+theme_override_fonts/font = ExtResource("4_1bvp3")
+theme_override_font_sizes/font_size = 24
+text = "$0"
+
+[node name="BuyCellButton" type="Button" parent="JailIconOverlay" unique_id=782088729]
+offset_left = 616.0
+offset_top = 938.0
+offset_right = 694.0
+offset_bottom = 1012.0
+theme_override_fonts/font = ExtResource("4_1bvp3")
+theme_override_font_sizes/font_size = 18
+text = "Buy
+Cell
+($500)"
+
 [node name="DayOverOverlay" type="Node2D" parent="." unique_id=1178398197]
 
 [node name="DayCompleteLabel" type="Label" parent="DayOverOverlay" unique_id=1622343282]
@@ -302,4 +322,5 @@ position = Vector2(1192, 165)
 [connection signal="pressed" from="PosterOverlay/PosterOverlayControls/BeginButton" to="." method="_on_begin_button_pressed"]
 [connection signal="timeout" from="JailIconOverlay/CatchLabel/CatchLabelTimer" to="." method="_on_catch_label_timer_timeout"]
 [connection signal="pressed" from="JailIconOverlay/EndDayButton" to="." method="end_day"]
+[connection signal="pressed" from="JailIconOverlay/BuyCellButton" to="." method="_on_buy_cell_button_pressed"]
 [connection signal="pressed" from="DayOverOverlay/NextDayButton" to="." method="start_day"]

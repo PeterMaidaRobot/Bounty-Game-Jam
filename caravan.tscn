@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://bmcvdr5ecuhwp"]
+
+[ext_resource type="Texture2D" uid="uid://d3k34ppru8v7v" path="res://art/caravan.png" id="1_um1l5"]
+
+[node name="Caravan" type="Node2D" unique_id=1312212833]
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1361940514]
+texture = ExtResource("1_um1l5")

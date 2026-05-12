@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://bo6wn3xhpfhef"]
+
+[ext_resource type="Texture2D" uid="uid://ci5d5d7ntdjhp" path="res://art/cauldron.png" id="1_5qdwy"]
+
+[node name="Cauldron" type="Node2D" unique_id=1965201093]
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1793995043]
+position = Vector2(0, -1)
+texture = ExtResource("1_5qdwy")

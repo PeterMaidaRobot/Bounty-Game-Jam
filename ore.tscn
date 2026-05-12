@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://dugmuqv8mh7e1"]
+
+[ext_resource type="Texture2D" uid="uid://brrrqcd4polww" path="res://art/ore.png" id="1_52qyt"]
+
+[node name="Ore" type="Node2D" unique_id=1703076952]
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=156427691]
+texture = ExtResource("1_52qyt")

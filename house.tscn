@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://byfv5jklyvx5m" path="res://art/house.png" id="1_hfkix"]
 
 [node name="House" type="Node2D" unique_id=1540050942]
+metadata/_edit_group_ = true
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=37444660]
 texture = ExtResource("1_hfkix")

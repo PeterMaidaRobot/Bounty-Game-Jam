@@ -29,7 +29,32 @@ enum PATH_OPTIONS {
 			
 			HOUSE4TO1,
 			HOUSE4TO2,
-			HOUSE4TO3
+			HOUSE4TO3,
+			
+			HOUSE1TOORE,
+			HOUSE2TOORE,
+			HOUSE3TOORE,
+			HOUSE4TOORE,
+			
+			HOUSE1TOPOT,
+			HOUSE2TOPOT,
+			HOUSE3TOPOT,
+			HOUSE4TOPOT,
+			
+			HOUSE1TOTOWER,
+			HOUSE2TOTOWER,
+			HOUSE3TOTOWER,
+			HOUSE4TOTOWER,
+			
+			HOUSE1TOHORSE,
+			HOUSE2TOHORSE,
+			HOUSE3TOHORSE,
+			HOUSE4TOHORSE,
+			
+			HOUSE1TOSTAGE,
+			HOUSE2TOSTAGE,
+			HOUSE3TOSTAGE,
+			HOUSE4TOSTAGE
 }
 
 func _ready():
@@ -59,7 +84,7 @@ func _process(delta: float) -> void:
 	var end_day : bool = false
 	if game_state == GAME_STATE.CATCHING:
 		for person in people:
-			var delete_person : bool = person.update_movement(delta)
+			var delete_person : bool = await person.update_movement(delta)
 			if delete_person:
 				for child in $Y_Sorted_Sprites/People.get_children():
 					if child == person:
@@ -84,6 +109,7 @@ func get_random_vector(max_radius):
 
 func get_random_path() -> Array[Vector2]: # TODO please actually use a graphing library...
 	const MAX_RADIUS = 100
+	const DEST_RADIUS = 100
 	var points : Array[Vector2]
 	var path_option : PATH_OPTIONS = PATH_OPTIONS.values().pick_random()
 	
@@ -176,6 +202,150 @@ func get_random_path() -> Array[Vector2]: # TODO please actually use a graphing 
 						$PathingPoints/Path6Point.position + get_random_vector(MAX_RADIUS),
 						$PathingPoints/Path5Point.position + get_random_vector(MAX_RADIUS),
 						$PathingPoints/House3Point.position]
+		# TO ORE
+		PATH_OPTIONS.HOUSE1TOORE:
+			points = [$PathingPoints/House1Point.position,
+						$PathingPoints/Path1Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path0Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/OrePoint.position + get_random_vector(DEST_RADIUS)]
+		PATH_OPTIONS.HOUSE2TOORE:
+			points = [$PathingPoints/House2Point.position,
+						$PathingPoints/Path3Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path2Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path1Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path0Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/OrePoint.position + get_random_vector(DEST_RADIUS)]
+		PATH_OPTIONS.HOUSE3TOORE:
+			points = [$PathingPoints/House3Point.position,
+						$PathingPoints/Path5Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path4Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path3Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path2Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path1Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path0Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/OrePoint.position + get_random_vector(DEST_RADIUS)]
+		PATH_OPTIONS.HOUSE4TOORE:
+			points = [$PathingPoints/House4Point.position,
+						$PathingPoints/Path7Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path6Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path5Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path4Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path3Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path2Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path1Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path0Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/OrePoint.position + get_random_vector(DEST_RADIUS)]
+		# TO POT
+		PATH_OPTIONS.HOUSE1TOPOT:
+			points = [$PathingPoints/House1Point.position,
+						$PathingPoints/Path1Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path2Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/PotPoint.position + get_random_vector(DEST_RADIUS)]
+		PATH_OPTIONS.HOUSE2TOPOT:
+			points = [$PathingPoints/House2Point.position,
+						$PathingPoints/Path3Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path2Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/PotPoint.position + get_random_vector(DEST_RADIUS)]
+		PATH_OPTIONS.HOUSE3TOPOT:
+			points = [$PathingPoints/House3Point.position,
+						$PathingPoints/Path5Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path4Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path3Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path2Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/PotPoint.position + get_random_vector(DEST_RADIUS)]
+		PATH_OPTIONS.HOUSE4TOPOT:
+			points = [$PathingPoints/House4Point.position,
+						$PathingPoints/Path7Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path6Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path5Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path4Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path3Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path2Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/PotPoint.position + get_random_vector(DEST_RADIUS)]
+		# TO TOWER
+		PATH_OPTIONS.HOUSE1TOTOWER:
+			points = [$PathingPoints/House1Point.position,
+						$PathingPoints/Path1Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path2Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path3Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path4Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/CenterPath.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/TowerPoint.position + get_random_vector(DEST_RADIUS)]
+		PATH_OPTIONS.HOUSE2TOTOWER:
+			points = [$PathingPoints/House2Point.position,
+						$PathingPoints/Path3Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path4Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/CenterPath.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/TowerPoint.position + get_random_vector(DEST_RADIUS)]
+		PATH_OPTIONS.HOUSE3TOTOWER:
+			points = [$PathingPoints/House3Point.position,
+						$PathingPoints/Path5Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path4Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/CenterPath.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/TowerPoint.position + get_random_vector(DEST_RADIUS)]
+		PATH_OPTIONS.HOUSE4TOTOWER:
+			points = [$PathingPoints/House4Point.position,
+						$PathingPoints/Path7Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path6Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path5Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path4Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/CenterPath.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/TowerPoint.position + get_random_vector(DEST_RADIUS)]
+		# TO HORSE
+		PATH_OPTIONS.HOUSE1TOHORSE:
+			points = [$PathingPoints/House1Point.position,
+						$PathingPoints/Path1Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path2Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path3Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path4Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/CenterPath.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/HorsePoint.position + get_random_vector(DEST_RADIUS)]
+		PATH_OPTIONS.HOUSE2TOHORSE:
+			points = [$PathingPoints/House2Point.position,
+						$PathingPoints/Path3Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path4Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/CenterPath.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/HorsePoint.position + get_random_vector(DEST_RADIUS)]
+		PATH_OPTIONS.HOUSE3TOHORSE:
+			points = [$PathingPoints/House3Point.position,
+						$PathingPoints/Path5Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path4Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/CenterPath.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/HorsePoint.position + get_random_vector(DEST_RADIUS)]
+		PATH_OPTIONS.HOUSE4TOHORSE:
+			points = [$PathingPoints/House4Point.position,
+						$PathingPoints/Path7Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path6Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path5Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path4Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/CenterPath.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/HorsePoint.position + get_random_vector(DEST_RADIUS)]
+		# TO STAGE
+		PATH_OPTIONS.HOUSE1TOSTAGE:
+			points = [$PathingPoints/House1Point.position,
+						$PathingPoints/Path1Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path2Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path3Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path4Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path5Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/StagePoint.position + get_random_vector(DEST_RADIUS)]
+		PATH_OPTIONS.HOUSE2TOSTAGE:
+			points = [$PathingPoints/House2Point.position,
+						$PathingPoints/Path3Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path4Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path5Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/StagePoint.position + get_random_vector(DEST_RADIUS)]
+		PATH_OPTIONS.HOUSE3TOSTAGE:
+			points = [$PathingPoints/House3Point.position,
+						$PathingPoints/Path5Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/StagePoint.position + get_random_vector(DEST_RADIUS)]
+		PATH_OPTIONS.HOUSE4TOSTAGE:
+			points = [$PathingPoints/House4Point.position,
+						$PathingPoints/Path7Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path6Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/Path5Point.position + get_random_vector(MAX_RADIUS),
+						$PathingPoints/StagePoint.position + get_random_vector(DEST_RADIUS)]
+						
 		_:
 			print("Path option node found: " + PATH_OPTIONS.keys()[path_option])
 			

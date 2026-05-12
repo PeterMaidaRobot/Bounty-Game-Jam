@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://bgbtowpekl2ig"]
+
+[ext_resource type="Texture2D" uid="uid://671h3c6i7uty" path="res://art/horse.png" id="1_eplvg"]
+
+[node name="Horse" type="Node2D" unique_id=547051337]
+metadata/_edit_group_ = true
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=670049434]
+texture = ExtResource("1_eplvg")

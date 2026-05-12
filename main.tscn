@@ -4,8 +4,12 @@
 [ext_resource type="PackedScene" uid="uid://584nm6f4y54f" path="res://person.tscn" id="2_0xm2m"]
 [ext_resource type="FontFile" uid="uid://ccru57xiyx2le" path="res://fonts/Bookman Old Style Regular.ttf" id="2_h2yge"]
 [ext_resource type="Texture2D" uid="uid://bwk4axvkw8vc5" path="res://art/background.png" id="2_lquwl"]
+[ext_resource type="PackedScene" uid="uid://bmcvdr5ecuhwp" path="res://caravan.tscn" id="3_4c57u"]
 [ext_resource type="PackedScene" uid="uid://c2pgkxc4xburm" path="res://house.tscn" id="3_7mycd"]
 [ext_resource type="FontFile" uid="uid://bb7tm4nckig6j" path="res://fonts/Bookman Old Style Bold.ttf" id="4_1bvp3"]
+[ext_resource type="PackedScene" uid="uid://bgbtowpekl2ig" path="res://horse.tscn" id="4_efxa6"]
+[ext_resource type="PackedScene" uid="uid://bo6wn3xhpfhef" path="res://cauldron.tscn" id="5_dg77c"]
+[ext_resource type="PackedScene" uid="uid://dugmuqv8mh7e1" path="res://ore.tscn" id="6_ycdy4"]
 
 [node name="Main" type="Node2D" unique_id=1702526141]
 script = ExtResource("1_ig7tw")
@@ -14,10 +18,95 @@ script = ExtResource("1_ig7tw")
 position = Vector2(960, 540)
 texture = ExtResource("2_lquwl")
 
+[node name="Caravans" type="Node2D" parent="." unique_id=1372605752]
+
+[node name="Caravan" parent="Caravans" unique_id=1312212833 instance=ExtResource("3_4c57u")]
+position = Vector2(1669, 99)
+
+[node name="Caravan2" parent="Caravans" unique_id=1220820398 instance=ExtResource("3_4c57u")]
+position = Vector2(1762, 102)
+
+[node name="Caravan3" parent="Caravans" unique_id=1795048490 instance=ExtResource("3_4c57u")]
+position = Vector2(1838, 116)
+
+[node name="Caravan4" parent="Caravans" unique_id=900268062 instance=ExtResource("3_4c57u")]
+position = Vector2(1605, 95)
+
+[node name="Caravan5" parent="Caravans" unique_id=634307548 instance=ExtResource("3_4c57u")]
+position = Vector2(1517, 74)
+
+[node name="Caravan6" parent="Caravans" unique_id=2014161969 instance=ExtResource("3_4c57u")]
+position = Vector2(1584, 43)
+
+[node name="Caravan7" parent="Caravans" unique_id=863912651 instance=ExtResource("3_4c57u")]
+position = Vector2(1657, 41)
+
+[node name="Caravan8" parent="Caravans" unique_id=124635682 instance=ExtResource("3_4c57u")]
+position = Vector2(1738, 50)
+
+[node name="Caravan9" parent="Caravans" unique_id=2130618557 instance=ExtResource("3_4c57u")]
+position = Vector2(1833, 51)
+
+[node name="Horses" type="Node2D" parent="." unique_id=1674988577]
+
+[node name="Horse" parent="Horses" unique_id=547051337 instance=ExtResource("4_efxa6")]
+position = Vector2(1174, 228)
+
+[node name="Horse2" parent="Horses" unique_id=84066247 instance=ExtResource("4_efxa6")]
+position = Vector2(1247, 245)
+
+[node name="Horse3" parent="Horses" unique_id=1696938520 instance=ExtResource("4_efxa6")]
+position = Vector2(1169, 314)
+
+[node name="Horse4" parent="Horses" unique_id=1042257293 instance=ExtResource("4_efxa6")]
+position = Vector2(1261, 314)
+
+[node name="Cauldron" parent="." unique_id=1965201093 instance=ExtResource("5_dg77c")]
+position = Vector2(232, 847)
+
+[node name="Ores" type="Node2D" parent="." unique_id=1068954354]
+position = Vector2(960, 540)
+
+[node name="Ore" parent="Ores" unique_id=1703076952 instance=ExtResource("6_ycdy4")]
+position = Vector2(-911, -298)
+
+[node name="Ore2" parent="Ores" unique_id=907275984 instance=ExtResource("6_ycdy4")]
+position = Vector2(-916, -381)
+
+[node name="Ore3" parent="Ores" unique_id=1685650457 instance=ExtResource("6_ycdy4")]
+position = Vector2(-684, -260)
+
+[node name="Ore4" parent="Ores" unique_id=1163128709 instance=ExtResource("6_ycdy4")]
+position = Vector2(-724, -329)
+
+[node name="Ore5" parent="Ores" unique_id=240707386 instance=ExtResource("6_ycdy4")]
+position = Vector2(-698, -402)
+
+[node name="Ore6" parent="Ores" unique_id=1426438257 instance=ExtResource("6_ycdy4")]
+position = Vector2(-795, -482)
+
+[node name="Ore7" parent="Ores" unique_id=1708727268 instance=ExtResource("6_ycdy4")]
+position = Vector2(-873, -461)
+
+[node name="Ore8" parent="Ores" unique_id=1143532670 instance=ExtResource("6_ycdy4")]
+position = Vector2(-752, -406)
+
+[node name="Ore9" parent="Ores" unique_id=76462120 instance=ExtResource("6_ycdy4")]
+position = Vector2(-721, -453)
+
+[node name="Ore10" parent="Ores" unique_id=1873296063 instance=ExtResource("6_ycdy4")]
+position = Vector2(-842, -500)
+
+[node name="Ore11" parent="Ores" unique_id=344894212 instance=ExtResource("6_ycdy4")]
+position = Vector2(-922, -452)
+
+[node name="Ore12" parent="Ores" unique_id=200862854 instance=ExtResource("6_ycdy4")]
+position = Vector2(-739, -526)
+
 [node name="Houses" type="Node2D" parent="." unique_id=33866670]
 
 [node name="House" parent="Houses" unique_id=1540050942 instance=ExtResource("3_7mycd")]
-position = Vector2(841, 423)
+position = Vector2(814, 436)
 
 [node name="House2" parent="Houses" unique_id=598039067 instance=ExtResource("3_7mycd")]
 position = Vector2(368, 432)
@@ -160,34 +249,55 @@ text = "NEXT DAY"
 position = Vector2(357, 556)
 
 [node name="Path1Point" type="Marker2D" parent="PathingPoints" unique_id=1365510343]
-position = Vector2(358, 680)
+position = Vector2(358, 660)
 
 [node name="Path2Point" type="Marker2D" parent="PathingPoints" unique_id=628994785]
-position = Vector2(596, 677)
+position = Vector2(597, 659)
 
 [node name="Path3Point" type="Marker2D" parent="PathingPoints" unique_id=626665920]
-position = Vector2(834, 680)
+position = Vector2(829, 662)
 
 [node name="House2Point" type="Marker2D" parent="PathingPoints" unique_id=331654992]
 position = Vector2(838, 542)
 
 [node name="Path4Point" type="Marker2D" parent="PathingPoints" unique_id=1507073717]
-position = Vector2(1078, 676)
+position = Vector2(1072, 658)
 
 [node name="Path5Point" type="Marker2D" parent="PathingPoints" unique_id=1350186335]
-position = Vector2(1314, 669)
+position = Vector2(1309, 654)
 
 [node name="House3Point" type="Marker2D" parent="PathingPoints" unique_id=2023309393]
 position = Vector2(1307, 533)
 
 [node name="Path6Point" type="Marker2D" parent="PathingPoints" unique_id=1167218915]
-position = Vector2(1557, 659)
+position = Vector2(1552, 639)
 
 [node name="Path7Point" type="Marker2D" parent="PathingPoints" unique_id=1349017978]
-position = Vector2(1770, 668)
+position = Vector2(1768, 637)
 
 [node name="House4Point" type="Marker2D" parent="PathingPoints" unique_id=846787425]
 position = Vector2(1762, 514)
+
+[node name="StagePoint" type="Marker2D" parent="PathingPoints" unique_id=40451591]
+position = Vector2(1440, 943)
+
+[node name="PotPoint" type="Marker2D" parent="PathingPoints" unique_id=1045594077]
+position = Vector2(320, 849)
+
+[node name="OrePoint" type="Marker2D" parent="PathingPoints" unique_id=886741213]
+position = Vector2(138, 178)
+
+[node name="Path0Point" type="Marker2D" parent="PathingPoints" unique_id=1635196937]
+position = Vector2(138, 628)
+
+[node name="CenterPath" type="Marker2D" parent="PathingPoints" unique_id=1946653745]
+position = Vector2(1027, 422)
+
+[node name="TowerPoint" type="Marker2D" parent="PathingPoints" unique_id=1864732559]
+position = Vector2(881, 208)
+
+[node name="HorsePoint" type="Marker2D" parent="PathingPoints" unique_id=319184870]
+position = Vector2(1192, 165)
 
 [connection signal="pressed" from="PosterOverlay/PosterOverlayControls/BeginButton" to="." method="_on_begin_button_pressed"]
 [connection signal="timeout" from="JailIconOverlay/CatchLabel/CatchLabelTimer" to="." method="_on_catch_label_timer_timeout"]

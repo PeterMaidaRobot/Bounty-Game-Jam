@@ -42,7 +42,7 @@ signal person_clicked(person)
 const MAX_SPEED : int = 100
 
 var target : Vector2
-var speed : int = 100 #30 # 10 is a casual speed
+var speed : int = 1000 # 100 #30 # 10 is a casual speed
 var full_name : String = "Bob Smith"
 var bounty : int = 0 # if the bounty is zero, they aren't a criminal
 var caught : bool = false
@@ -115,6 +115,9 @@ var new_crime : CRIME_TYPE = CRIME_TYPE.NONE
 
 var path : Array[Vector2]
 var path_node_idx : int = 0
+var going_home : bool = false
+const INITIAL_ACTIVITY_WAIT_TIME : float = 5
+var activity_wait_time : float = INITIAL_ACTIVITY_WAIT_TIME
 
 
 
@@ -163,7 +166,7 @@ static func constructor(path_points : Array[Vector2]) -> Person:
 	person.set_initial_features()
 	
 	person.path = path_points
-	person.speed = MAX_SPEED * randf_range(0.5, 1)
+	person.speed = MAX_SPEED * randf_range(0.3, 1)
 	return person
 
 
@@ -341,6 +344,8 @@ func restart_path():
 	position = path[0]
 	path_node_idx = 1
 	target = path[path_node_idx]
+	going_home = false
+	activity_wait_time = INITIAL_ACTIVITY_WAIT_TIME
 
 
 
@@ -432,8 +437,8 @@ func _draw_feature_shapes():
 func _draw():
 	if draw_enabled:
 		_draw_feature_shapes()
-		for point in path:
-			draw_circle(point - position, 10, Color.RED)
+		#for point in path: # DEBUG PATH
+			#draw_circle(point - position, 10, Color.RED)
 
 
 func _process(delta : float):
@@ -442,14 +447,23 @@ func _process(delta : float):
 func update_movement(delta : float) -> bool:
 	var delete_me : bool = false
 	# wander logic
-	if position.distance_to(target) < 1.0:
-		if path_node_idx >= len(path):
-			# End of the path
+	if going_home and activity_wait_time > 0:
+		activity_wait_time -= delta
+	elif position.distance_to(target) < 1.0:
+		if path_node_idx == -1 and going_home:
+			# Went to destination, and got back home. Delete now
 			delete_me = true
+		elif path_node_idx >= len(path) and not going_home:
+			# End of the path, go backwards
+			going_home = true
+			path_node_idx -= 1
 		else:
 			# Grab the next target in the list
 			target = path[path_node_idx]
-			path_node_idx += 1
+			if going_home:
+				path_node_idx -= 1
+			else:
+				path_node_idx += 1
 	else:
 		# keep moving to our target
 		position = position.move_toward(target, speed * delta)

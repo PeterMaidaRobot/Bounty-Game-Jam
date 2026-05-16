@@ -68,14 +68,14 @@ func _ready():
 	
 	Person.generate_person_index_options()
 	## Generate a lot of people!!!
-	for i in range(24):
+	for i in range(20):
 		var person : Person = Person.constructor(get_random_path())
 		
 		# When this person is clicked, we need to register back to this game engine
 		person.person_clicked.connect(_on_person_clicked)
 		
 		#person.bounty = 1
-		person.bounty = randi_range(0, 2) * 100
+		person.bounty = randi_range(0, 1) * 100
 		#print(person.path)
 		
 		people.append(person)
@@ -428,6 +428,16 @@ func remove_arrested_people():
 The start day function will first show all of the wanted posters
 '''
 func start_day():
+	
+	# Add more people
+	if day > 0:
+		for i in range(5):
+			var person : Person = Person.constructor(get_random_path())
+			# When this person is clicked, we need to register back to this game engine
+			person.person_clicked.connect(_on_person_clicked)
+			person.bounty = randi_range(0, 1) * 100
+			people.append(person)
+			
 	day += 1
 	print("Starting day " + str(day) + "...")
 	$DayOverOverlay.hide()

@@ -182,6 +182,16 @@ text = "You Win!
 No Criminals left in town!"
 horizontal_alignment = 1
 
+[node name="NewArrivalsLabel" type="Label" parent="PosterOverlay/PosterOverlayControls" unique_id=2075813777]
+layout_mode = 0
+offset_left = 1294.0
+offset_top = 27.0
+offset_right = 1544.0
+offset_bottom = 50.0
+theme_override_fonts/font = ExtResource("4_1bvp3")
+theme_override_font_sizes/font_size = 18
+text = "Caravan with new arrivals!"
+
 [node name="DummyPerson" parent="." unique_id=203893817 instance=ExtResource("2_0xm2m")]
 visible = false
 position = Vector2(100, 100)

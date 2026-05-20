@@ -366,7 +366,12 @@ func add_people_to_scene():
 
 
 func add_new_arrival_people():
-	pass # TODO add more people for the number of caravans tha arrive?
+	for i in range(5):
+		var person : Person = Person.constructor(get_random_path())
+		# When this person is clicked, we need to register back to this game engine
+		person.person_clicked.connect(_on_person_clicked)
+		person.bounty = randi_range(0, 1) * 100
+		people.append(person)
 
 
 func generate_wanted_posters():
@@ -424,20 +429,18 @@ func remove_arrested_people():
 		people.remove_at(people.find(arrested_person)) # unsafe, could be -1
 
 
+func is_free_town():
+	# the town is free from criminals if at least one person has a bounty
+	for person in people:
+		if person.bounty > 0:
+			return false
+	return true
+
 '''
 The start day function will first show all of the wanted posters
 '''
 func start_day():
 	
-	# Add more people
-	if day > 0:
-		for i in range(5):
-			var person : Person = Person.constructor(get_random_path())
-			# When this person is clicked, we need to register back to this game engine
-			person.person_clicked.connect(_on_person_clicked)
-			person.bounty = randi_range(0, 1) * 100
-			people.append(person)
-			
 	day += 1
 	print("Starting day " + str(day) + "...")
 	$DayOverOverlay.hide()
@@ -445,7 +448,9 @@ func start_day():
 	
 	remove_arrested_people()
 	
-	add_new_arrival_people()
+	# Add more people (if they haven't already won)
+	if day > 1 and not is_free_town():
+		add_new_arrival_people()
 	
 	$PosterOverlay/PosterOverlayControls.show()
 	generate_wanted_posters()

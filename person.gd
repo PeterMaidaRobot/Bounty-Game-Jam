@@ -104,8 +104,8 @@ enum DRAW_TYPE { RECT, CIRCLE, ELLIPSE, POLYGON }
 enum FEATURE_TYPE { BODY, HEAD, MOUSTACHE, EYES, EYEBROWS }
 var feature_params = []
 
-const FIRST_NAME_OPTIONS = ["Alex", "Bob", "Charlie", "Clyde", "Dax", "Edward", "Felipe", "Greg", "Peter", "Spencer", "Zach"]
-const LAST_NAME_OPTIONS = ["Smith", "Long", "Wild", "Brown", "Wilson"]
+const FIRST_NAME_OPTIONS = ["Alex", "Bob", "Charlie", "Clyde", "Dax", "Edward", "Felipe", "Greg", "Hal", "Ian", "Jack", "Kent", "Lance", "Max", "Nick", "Owen", "Peter", "Quentin", "Spencer", "Zach"]
+const LAST_NAME_OPTIONS = ["Johnson", "Smith", "Li", "Clemson", "Short", "Long", "Wild", "Brown", "Wilson", "Williams", "Jones", "Garcia", "Moore", "Thomas", "Jackson", "Martinez", "Gonzales", "White", "Davis", "Thompson"]
 
 
 

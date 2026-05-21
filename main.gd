@@ -77,8 +77,8 @@ func _ready():
 	
 	
 	# Start with 6 people in town, with one more than the number of jail cells you have
-	const NUM_PEOPLE_TO_ADD : int = 6
-	const NUM_CRIMINALS_TO_ADD : int = 3
+	const NUM_PEOPLE_TO_ADD : int = 30#6
+	const NUM_CRIMINALS_TO_ADD : int = 30#3
 	add_new_arrival_people(NUM_PEOPLE_TO_ADD, NUM_CRIMINALS_TO_ADD)
 	
 	#Person.feature_tree_root.print()

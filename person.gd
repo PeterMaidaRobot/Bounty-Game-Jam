@@ -1,5 +1,7 @@
 class_name Person extends Node2D
 
+enum MOUSTACHE_TYPE { NONE, PENCIL, WALRUS, THICK }
+enum EYEBROW_TYPE { NONE, THIN, THICK }
 
 @export_group("Body")
 @export var body_width : int = 25
@@ -7,13 +9,20 @@ class_name Person extends Node2D
 @export var body_color : Color = Color.SADDLE_BROWN
 
 @export_group("Eyebrow")
-@export var has_eyebrows : bool = true
-@export var eyebrow_width : int = 17
-@export var eyebrow_height : int = 7
-@export var eyebrow_spacing : int = 10
-@export var eyebrow_y_offset : int = -19
-@export var eyebrow_rotation : int = 20
+@export var eyebrow_type : EYEBROW_TYPE = EYEBROW_TYPE.THICK
 @export var eyebrow_color : Color = Color.DARK_GREEN
+@export var eyebrow_spacing : int = 10
+# Thick
+@export var thick_eyebrow_width : int = 17
+@export var thick_eyebrow_height : int = 7
+@export var thick_eyebrow_y_offset : int = -19
+@export var thick_eyebrow_rotation : int = 20
+# Thin
+@export var thin_eyebrow_width : int = 14
+@export var thin_eyebrow_height : int = 3
+@export var thin_eyebrow_y_offset : int = -15
+@export var thin_eyebrow_rotation : int = 7
+
 
 @export_group("Eye")
 @export var eye_radius : int = 3
@@ -22,17 +31,21 @@ class_name Person extends Node2D
 @export var eye_color : Color = Color.BLACK
 
 @export_group("Moustache")
-@export var has_moustache : bool = true
-@export var moustache_radius : int = 8
-@export var moustache_endpoint_ratio : float = 2
-@export var moustache_bridge_ratio : float = 1.5
-@export var moustache_height_ratio : float = 0.5
+@export var moustache_type : MOUSTACHE_TYPE = MOUSTACHE_TYPE.NONE
+@export var thick_moustache_radius : int = 8
+@export var thick_moustache_endpoint_ratio : float = 2
+@export var thick_moustache_bridge_ratio : float = 1.5
+@export var thick_moustache_height_ratio : float = 0.5
 @export var moustache_color : Color = Color.DARK_GREEN
 
 @export_group("Head")
 @export var head_height : int = 20
 @export var head_width : int = 18
 @export var head_color : Color = Color.YELLOW
+
+@export_group("Mouth")
+@export var mouth_height : int = 2
+@export var mouth_width  : int = 10
 
 @export_group("")
 
@@ -101,7 +114,7 @@ const BODY_COLORS = [
 ]
 
 enum DRAW_TYPE { RECT, CIRCLE, ELLIPSE, POLYGON }
-enum FEATURE_TYPE { BODY, HEAD, MOUSTACHE, EYES, EYEBROWS }
+enum FEATURE_TYPE { BODY, HEAD, MOUTH, MOUSTACHE, EYES, EYEBROWS }
 var feature_params = []
 
 const FIRST_NAME_OPTIONS = ["Alex", "Bob", "Charlie", "Clyde", "Dax", "Edward", "Felipe", "Greg", "Hal", "Ian", "Jack", "Kent", "Lance", "Max", "Nick", "Owen", "Peter", "Quentin", "Spencer", "Zach"]
@@ -132,8 +145,6 @@ const HAIR_COLOR_KEY : String = "hair_color"
 const MOUSTACHE_TYPE_KEY : String = "moustache_type"
 const EYEBROW_TYPE_KEY : String = "eyebrow_type"
 
-enum MOUSTACHE_TYPE { NONE, THICK }
-enum EYEBROW_TYPE { NONE, THICK }
 
 # Create a treenode structure to house the feature options
 class TreeNode:
@@ -191,11 +202,15 @@ static func _get_moustache_type_children():
 	for moustache_type in MOUSTACHE_TYPE:
 		var new_moustache_node = TreeNode.new(MOUSTACHE_TYPE_KEY, moustache_type)
 		new_moustache_node.children = _get_eyebrow_type_children()
-		match MOUSTACHE_TYPE.get(moustache_type):
-			MOUSTACHE_TYPE.NONE:
-				new_moustache_node.weight = 2
-			MOUSTACHE_TYPE.THICK:
-				new_moustache_node.weight = 3
+		#match MOUSTACHE_TYPE.get(moustache_type):
+			#MOUSTACHE_TYPE.NONE:
+				#new_moustache_node.weight = 2
+			#MOUSTACHE_TYPE.PENCIL:
+				#new_moustache_node.weight = 3
+			#MOUSTACHE_TYPE.ITALIAN:
+				#new_moustache_node.weight = 3
+			#MOUSTACHE_TYPE.THICK:
+				#new_moustache_node.weight = 3
 		moustache_type_children.append(new_moustache_node)
 	return moustache_type_children
 
@@ -325,8 +340,8 @@ func generate_unique_person():
 		}
 	
 	
-	has_moustache = MOUSTACHE_TYPE.get(feature_set[MOUSTACHE_TYPE_KEY]) != MOUSTACHE_TYPE.NONE
-	has_eyebrows = EYEBROW_TYPE.get(feature_set[EYEBROW_TYPE_KEY]) != EYEBROW_TYPE.NONE
+	moustache_type = MOUSTACHE_TYPE.get(feature_set[MOUSTACHE_TYPE_KEY])
+	eyebrow_type = EYEBROW_TYPE.get(feature_set[EYEBROW_TYPE_KEY])
 	
 	head_color = feature_set[HEAD_COLOR_KEY]
 	eyebrow_color = feature_set[HAIR_COLOR_KEY]
@@ -349,6 +364,85 @@ func restart_path():
 
 
 
+func _set_initial_moustache_features():
+	
+	if moustache_type == MOUSTACHE_TYPE.THICK:
+		var offset : Vector2 = Vector2(0, 2)
+		var coords = [
+			[offset.x - thick_moustache_radius * thick_moustache_endpoint_ratio, offset.y + thick_moustache_radius * thick_moustache_endpoint_ratio], # left point
+			[offset.x + thick_moustache_radius * thick_moustache_endpoint_ratio, offset.y + thick_moustache_radius * thick_moustache_endpoint_ratio], # right point
+			[offset.x + thick_moustache_radius * thick_moustache_bridge_ratio, offset.y], # top-right point
+			[offset.x, offset.y - thick_moustache_radius * thick_moustache_height_ratio],  # top point
+			[offset.x - thick_moustache_radius * thick_moustache_bridge_ratio, offset.y], # top-left point
+		]
+		var moustache = float_array_to_Vector2Array(coords)
+		feature_params.append([FEATURE_TYPE.MOUSTACHE, DRAW_TYPE.POLYGON, [moustache, [ moustache_color ]]])
+		
+	elif moustache_type == MOUSTACHE_TYPE.PENCIL:
+		var offset : Vector2 = Vector2(0, 10)
+		const CENTER_SPACING : int = 1
+		const MOUSTACHE_LENGTH : int = 10
+		const MOUSTACHE_HEIGHT : int = 5
+		const MOUSTACHE_PINCH : int = 2
+		var coords = [
+			[offset.x - MOUSTACHE_LENGTH - CENTER_SPACING, offset.y], # left point
+			[offset.x - CENTER_SPACING, offset.y - MOUSTACHE_HEIGHT],  # top point
+			[offset.x - CENTER_SPACING, offset.y - MOUSTACHE_PINCH], # right point
+		]
+		var moustache = float_array_to_Vector2Array(coords)
+		feature_params.append([FEATURE_TYPE.MOUSTACHE, DRAW_TYPE.POLYGON, [moustache, [ moustache_color ]]])
+		coords = [
+			[offset.x + MOUSTACHE_LENGTH + CENTER_SPACING, offset.y], # left point
+			[offset.x + CENTER_SPACING, offset.y - MOUSTACHE_HEIGHT],  # top point
+			[offset.x + CENTER_SPACING, offset.y - MOUSTACHE_PINCH], # right point
+		]
+		moustache = float_array_to_Vector2Array(coords)
+		feature_params.append([FEATURE_TYPE.MOUSTACHE, DRAW_TYPE.POLYGON, [moustache, [ moustache_color ]]])
+
+	if moustache_type == MOUSTACHE_TYPE.WALRUS:
+		const MOUSTACHE_WIDTH : int = 12
+		const MOUSTACHE_PIVOT : int = 10
+		const MOUSTACHE_HEIGHT : int = 6
+		const MOUSTACHE_WAVE : int = 2
+		var offset : Vector2 = Vector2(0, 2)
+		var coords = [
+			[offset.x, offset.y], # center top point
+			[offset.x - MOUSTACHE_PIVOT, offset.y + MOUSTACHE_HEIGHT/2], # top-left point
+			[offset.x - MOUSTACHE_WIDTH, offset.y + MOUSTACHE_HEIGHT + MOUSTACHE_WAVE], # left point
+			[offset.x - (2*MOUSTACHE_WIDTH)/3, offset.y + MOUSTACHE_HEIGHT], # left wave up point
+			[offset.x - (1*MOUSTACHE_WIDTH)/3, offset.y + MOUSTACHE_HEIGHT + MOUSTACHE_WAVE], # left wave down point
+			[offset.x, offset.y + MOUSTACHE_HEIGHT], # center bottom point
+			# Now reverse the others
+			[offset.x + (1*MOUSTACHE_WIDTH)/3, offset.y + MOUSTACHE_HEIGHT + MOUSTACHE_WAVE], # right wave down point
+			[offset.x + (2*MOUSTACHE_WIDTH)/3, offset.y + MOUSTACHE_HEIGHT], # right wave up point
+			[offset.x + MOUSTACHE_WIDTH, offset.y + MOUSTACHE_HEIGHT + MOUSTACHE_WAVE], # right point
+			[offset.x + MOUSTACHE_PIVOT, offset.y + MOUSTACHE_HEIGHT/2], # top-right point
+		]
+		var moustache = float_array_to_Vector2Array(coords)
+		feature_params.append([FEATURE_TYPE.MOUSTACHE, DRAW_TYPE.POLYGON, [moustache, [ moustache_color ]]])
+
+func _set_initial_eyebrow_features():
+	
+	if eyebrow_type == EYEBROW_TYPE.THICK:
+		var pivot : Vector2 = Vector2(-eyebrow_spacing - (thick_eyebrow_width/2), thick_eyebrow_y_offset)
+		var points = get_rotated_rect(Rect2(0, 0, thick_eyebrow_width, thick_eyebrow_height), thick_eyebrow_rotation, pivot)
+		feature_params.append([FEATURE_TYPE.EYEBROWS, DRAW_TYPE.POLYGON, [points, [ eyebrow_color ]]])
+		
+		pivot = Vector2(eyebrow_spacing - (thick_eyebrow_width/2), thick_eyebrow_y_offset)
+		points = get_rotated_rect(Rect2(0, 0, thick_eyebrow_width, thick_eyebrow_height), thick_eyebrow_rotation * -1, pivot)
+		feature_params.append([FEATURE_TYPE.EYEBROWS, DRAW_TYPE.POLYGON, [points, [ eyebrow_color ]]])
+		
+	elif eyebrow_type == EYEBROW_TYPE.THIN:
+		var pivot : Vector2 = Vector2(-eyebrow_spacing - (thin_eyebrow_width/2), thin_eyebrow_y_offset)
+		var points = get_rotated_rect(Rect2(0, 0, thin_eyebrow_width, thin_eyebrow_height), thin_eyebrow_rotation, pivot)
+		feature_params.append([FEATURE_TYPE.EYEBROWS, DRAW_TYPE.POLYGON, [points, [ eyebrow_color ]]])
+		
+		pivot = Vector2(eyebrow_spacing - (thin_eyebrow_width/2), thin_eyebrow_y_offset)
+		points = get_rotated_rect(Rect2(0, 0, thin_eyebrow_width, thin_eyebrow_height), thin_eyebrow_rotation * -1, pivot)
+		feature_params.append([FEATURE_TYPE.EYEBROWS, DRAW_TYPE.POLYGON, [points, [ eyebrow_color ]]])
+
+
+
 # This function will add the order of all the features needed for this person
 func set_initial_features():
 	# BODY
@@ -357,32 +451,19 @@ func set_initial_features():
 	# HEAD
 	feature_params.append([FEATURE_TYPE.HEAD, DRAW_TYPE.ELLIPSE, [Vector2(0, 0), head_width, head_height, head_color]])
 	
+	# MOUTH
+	const MOUTH_OFFSET_Y : int = 10
+	feature_params.append([FEATURE_TYPE.MOUTH, DRAW_TYPE.RECT, [Rect2(-(mouth_width/2), MOUTH_OFFSET_Y, mouth_width, mouth_height), Color.BLACK]])
+	
 	# MOUSTACHE
-	if has_moustache:
-		var offset : Vector2 = Vector2(0, 2)
-		var coords = [
-			[offset.x - moustache_radius * moustache_endpoint_ratio, offset.y + moustache_radius * moustache_endpoint_ratio], # left point
-			[offset.x + moustache_radius * moustache_endpoint_ratio, offset.y + moustache_radius * moustache_endpoint_ratio], # right point
-			[offset.x + moustache_radius * moustache_bridge_ratio, offset.y], # top-right point
-			[offset.x, offset.y - moustache_radius * moustache_height_ratio],  # top point
-			[offset.x - moustache_radius * moustache_bridge_ratio, offset.y], # top-left point
-		]
-		var head = float_array_to_Vector2Array(coords)
-		feature_params.append([FEATURE_TYPE.MOUSTACHE, DRAW_TYPE.POLYGON, [head, [ moustache_color ]]])
+	_set_initial_moustache_features()
 	
 	# EYES
 	feature_params.append([FEATURE_TYPE.EYES, DRAW_TYPE.CIRCLE, [Vector2(eye_spacing * -1, eye_y_offset), eye_radius, eye_color]])
 	feature_params.append([FEATURE_TYPE.EYES, DRAW_TYPE.CIRCLE, [Vector2(eye_spacing, eye_y_offset), eye_radius, eye_color]])
 		
 	# EYEBROWS
-	if has_eyebrows:
-		var pivot : Vector2 = Vector2(-eyebrow_spacing - (eyebrow_width/2), eyebrow_y_offset)
-		var points = get_rotated_rect(Rect2(0, 0, eyebrow_width, eyebrow_height), eyebrow_rotation, pivot)
-		feature_params.append([FEATURE_TYPE.EYEBROWS, DRAW_TYPE.POLYGON, [points, [ eyebrow_color ]]])
-		
-		pivot = Vector2(eyebrow_spacing - (eyebrow_width/2), eyebrow_y_offset)
-		points = get_rotated_rect(Rect2(0, 0, eyebrow_width, eyebrow_height), eyebrow_rotation * -1, pivot)
-		feature_params.append([FEATURE_TYPE.EYEBROWS, DRAW_TYPE.POLYGON, [points, [ eyebrow_color ]]])
+	_set_initial_eyebrow_features()
 	
 
 
@@ -411,7 +492,7 @@ func get_rotated_rect(rect : Rect2, degrees : int, pivot : Vector2): # it's not 
 	## Apply rotation transform to each point
 	for i in range(points.size()):
 		points[i] = rotation_transform.basis_xform(points[i])
-		points[i] += pivot + Vector2(0, -sin(rotation_angle)*eyebrow_rotation/2)
+		points[i] += pivot + Vector2(0, -sin(rotation_angle)*thick_eyebrow_rotation/2)
 	
 	return points
 	
@@ -442,6 +523,8 @@ func _draw():
 
 
 func _process(delta : float):
+	feature_params = [] # TODO here for debugging the DummyPerson
+	set_initial_features() # here for debug
 	queue_redraw() # I only use this for debug, this doesn't need to be here
 
 func update_movement(delta : float) -> bool:

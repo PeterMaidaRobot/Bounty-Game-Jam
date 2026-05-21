@@ -199,8 +199,9 @@ theme_override_font_sizes/font_size = 18
 text = "Caravan with new arrivals!"
 
 [node name="DummyPerson" parent="." unique_id=203893817 instance=ExtResource("2_0xm2m")]
-visible = false
 position = Vector2(100, 100)
+eyebrow_type = 1
+moustache_type = 2
 
 [node name="JailIconOverlay" type="Node2D" parent="." unique_id=1847089184]
 

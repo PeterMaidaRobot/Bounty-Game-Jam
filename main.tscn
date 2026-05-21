@@ -120,6 +120,8 @@ position = Vector2(1310, 427)
 [node name="House4" parent="Houses" unique_id=770760895 instance=ExtResource("3_7mycd")]
 position = Vector2(1769, 404)
 
+[node name="FireAndBlood" type="Node2D" parent="." unique_id=811390512]
+
 [node name="Y_Sorted_Sprites" type="Node2D" parent="." unique_id=1605844370]
 y_sort_enabled = true
 
@@ -334,6 +336,7 @@ position = Vector2(881, 208)
 position = Vector2(1192, 165)
 
 [node name="InstructionsOverlay" type="Control" parent="." unique_id=383533659]
+visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0

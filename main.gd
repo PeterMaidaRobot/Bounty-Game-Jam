@@ -17,6 +17,9 @@ var game_state : GAME_STATE
 
 var player_money = 0
 
+var fire_scene = preload("res://fire.tscn")
+var blood_scene = preload("res://blood.tscn")
+
 
 enum PATH_OPTIONS {
 			HOUSE1TO2,
@@ -363,11 +366,9 @@ func add_people_to_scene():
 
 '''
 add_new_arrival_people
-this function will create the desired number of people/criminals
+this function will create the desired number of people/criminals in the scene
 '''
 func add_new_arrival_people(num_people : int, num_criminals : int):
-	# TODO only add to a certain number of people
-	print("Number of people is ", len(people))
 	const MAX_PEOPLE_IN_SCENE : int = 40
 	for i in range(num_people):
 		# Only generate a certain number of people
@@ -508,12 +509,42 @@ func end_day():
 				break
 	
 	# Commit crimes
-	for person in people:
-		person.commit_crime()
-		# TODO burn a building if the crime is ARSON
+	perform_crimes()
 		
 	game_state = GAME_STATE.STATS
 
+
+func perform_crimes():
+	for person in people:
+		person.increase_bounty_for_crime()
+		
+		if person.new_crime == Person.CRIME_TYPE.ARSON:
+			# Add a fire instance on one of the four buildings
+			var house_index : int = randi_range(1, 4)
+			var house_position : Vector2
+			match house_index:
+				1:
+					house_position = $Houses/House.position
+				2:
+					house_position = $Houses/House2.position
+				3:
+					house_position = $Houses/House3.position
+				4:
+					house_position = $Houses/House4.position
+			
+			var fire_instance = fire_scene.instantiate()
+			# Place the fire somewhere on the house
+			fire_instance.position = house_position + Vector2(randi_range(-100, 100),
+															  randi_range(-100, 100))
+			$FireAndBlood.add_child(fire_instance)
+			
+		elif person.new_crime == Person.CRIME_TYPE.MURDER:
+			# Add a new blood sprite on the path
+			var blood_instance = blood_scene.instantiate()
+			blood_instance.position = Vector2(randi_range(0, 1920),
+											  randi_range(620, 750))
+			$FireAndBlood.add_child(blood_instance)
+			# TODO should we kill someone random? YES!!!
 
 '''
 Updates the value and the label

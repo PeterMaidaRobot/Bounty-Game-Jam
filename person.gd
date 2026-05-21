@@ -109,7 +109,7 @@ const LAST_NAME_OPTIONS = ["Johnson", "Smith", "Li", "Clemson", "Short", "Long",
 
 
 
-enum CRIME_TYPE { NONE, CAUGHT, STEAL_APPLE, ARSON }
+enum CRIME_TYPE { NONE, CAUGHT, STOLE_BREAD, BAR_FIGHT, MURDER, ARSON }
 var new_crime : CRIME_TYPE = CRIME_TYPE.NONE
 
 
@@ -481,7 +481,7 @@ func _on_area_2d_input_event(viewport: Node, event: InputEvent, shape_idx: int) 
 		queue_redraw()
 		
 
-func commit_crime():
+func increase_bounty_for_crime():
 	bounty += get_bounty_increase(new_crime)
 
 
@@ -492,8 +492,12 @@ static func get_bounty_increase(crime : CRIME_TYPE):
 			pass
 		CRIME_TYPE.CAUGHT:
 			pass
-		CRIME_TYPE.STEAL_APPLE:
+		CRIME_TYPE.STOLE_BREAD:
 			increase = 100
+		CRIME_TYPE.BAR_FIGHT:
+			increase = 200
+		CRIME_TYPE.MURDER:
+			increase = 500
 		CRIME_TYPE.ARSON:
 			increase = 500
 	return increase
@@ -506,14 +510,23 @@ static func get_crime_string(crime : CRIME_TYPE):
 			return "No Crime\nCommitted"
 		CRIME_TYPE.CAUGHT:
 			return ""
-		CRIME_TYPE.STEAL_APPLE:
-			return "Stole\nApple\n+$" + str(increase)
+		CRIME_TYPE.STOLE_BREAD:
+			return "Stole\nBread\n+$" + str(increase)
+		CRIME_TYPE.BAR_FIGHT:
+			return "Got in\nBar Fight\n+$" + str(increase)
+		CRIME_TYPE.MURDER:
+			return "MURDER\n+$" + str(increase)
 		CRIME_TYPE.ARSON:
 			return "ARSON!\n+$" + str(increase)
 			
 func start_new_crime():
+	var possible_crimes = [CRIME_TYPE.STOLE_BREAD, CRIME_TYPE.BAR_FIGHT]
 	# randomly choose a new crime
 	if bounty >= 1000:
-		new_crime = CRIME_TYPE.ARSON
-	else:
-		new_crime = CRIME_TYPE.STEAL_APPLE
+		possible_crimes.append(CRIME_TYPE.ARSON)
+	if bounty >= 500:
+		possible_crimes.append(CRIME_TYPE.MURDER)
+	
+	# Grab a random crime from the possibilities
+	new_crime = possible_crimes[randi_range(0, len(possible_crimes) - 1)]
+	

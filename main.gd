@@ -2,8 +2,8 @@ extends Node2D
 
 
 const JAIL_CELL_SPACING = 120
-const MAX_JAIL_CELLS : int = 8
-var num_jail_cells : int = 4
+const MAX_JAIL_CELLS : int = 9
+var num_jail_cells : int = 2
 var num_full_cells : int = 0
 var arrested_people : Array[Person] = []
 
@@ -63,25 +63,22 @@ enum PATH_OPTIONS {
 
 func _ready():
 	
+	# Assure all the other overlays are hidden
 	$DayOverOverlay.hide()
 	$JailIconOverlay.hide()
+	$PosterOverlay.hide()
+	# Start with the instructions up
+	$InstructionsOverlay.show()
 	
 	Person.generate_person_index_options()
-	## Generate a lot of people!!!
-	for i in range(20):
-		var person : Person = Person.constructor(get_random_path())
-		
-		# When this person is clicked, we need to register back to this game engine
-		person.person_clicked.connect(_on_person_clicked)
-		
-		#person.bounty = 1
-		person.bounty = randi_range(0, 1) * 100
-		#print(person.path)
-		
-		people.append(person)
-		
+	
+	
+	# Start with 6 people in town, with one more than the number of jail cells you have
+	const NUM_PEOPLE_TO_ADD : int = 6
+	const NUM_CRIMINALS_TO_ADD : int = 3
+	add_new_arrival_people(NUM_PEOPLE_TO_ADD, NUM_CRIMINALS_TO_ADD)
+	
 	#Person.feature_tree_root.print()
-	start_day()
 
 
 func _process(delta: float) -> void:
@@ -364,13 +361,30 @@ func add_people_to_scene():
 		person.restart_path()
 		$Y_Sorted_Sprites/People.add_child(person)
 
-
-func add_new_arrival_people():
-	for i in range(5):
+'''
+add_new_arrival_people
+this function will create the desired number of people/criminals
+'''
+func add_new_arrival_people(num_people : int, num_criminals : int):
+	# TODO only add to a certain number of people
+	print("Number of people is ", len(people))
+	const MAX_PEOPLE_IN_SCENE : int = 40
+	for i in range(num_people):
+		# Only generate a certain number of people
+		if len(people) >= MAX_PEOPLE_IN_SCENE:
+			break
+		
 		var person : Person = Person.constructor(get_random_path())
 		# When this person is clicked, we need to register back to this game engine
 		person.person_clicked.connect(_on_person_clicked)
-		person.bounty = randi_range(0, 1) * 100
+		
+		# Only add the desired number of criminals
+		if num_criminals > 0:
+			person.bounty = randi_range(1, 3) * 100
+			num_criminals -= 1
+		else:
+			person.bounty = 0
+		
 		people.append(person)
 
 
@@ -450,7 +464,9 @@ func start_day():
 	
 	# Add more people (if they haven't already won)
 	if day > 1 and not is_free_town():
-		add_new_arrival_people()
+		const NUM_PEOPLE_TO_ADD : int = 6
+		var num_criminals_to_add : int = randi_range(2, 3)
+		add_new_arrival_people(NUM_PEOPLE_TO_ADD, num_criminals_to_add)
 	
 	$PosterOverlay/PosterOverlayControls.show()
 	generate_wanted_posters()
@@ -566,3 +582,8 @@ func _on_buy_cell_button_pressed() -> void:
 		$JailIconOverlay/CatchLabel.show()
 		$JailIconOverlay/CatchLabel/CatchLabelTimer.start()
 	
+
+
+func _on_play_game_button_pressed() -> void:
+	$InstructionsOverlay.hide()
+	start_day()

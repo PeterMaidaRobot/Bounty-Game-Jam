@@ -10,6 +10,9 @@
 [ext_resource type="PackedScene" uid="uid://bgbtowpekl2ig" path="res://horse.tscn" id="4_efxa6"]
 [ext_resource type="PackedScene" uid="uid://bo6wn3xhpfhef" path="res://cauldron.tscn" id="5_dg77c"]
 [ext_resource type="PackedScene" uid="uid://dugmuqv8mh7e1" path="res://ore.tscn" id="6_ycdy4"]
+[ext_resource type="Texture2D" uid="uid://myq3r62nhhfp" path="res://art/screenshots/wanted_poster.png" id="11_dg77c"]
+[ext_resource type="Texture2D" uid="uid://clcm04rpbttk2" path="res://art/jail_cell.png" id="12_ycdy4"]
+[ext_resource type="Texture2D" uid="uid://uncqyd2yx7gv" path="res://art/screenshots/people_roaming.png" id="13_ycdy4"]
 
 [node name="Main" type="Node2D" unique_id=1702526141]
 script = ExtResource("1_ig7tw")
@@ -124,6 +127,7 @@ y_sort_enabled = true
 y_sort_enabled = true
 
 [node name="PosterOverlay" type="Node2D" parent="." unique_id=923336745]
+visible = false
 
 [node name="Posters" type="Node2D" parent="PosterOverlay" unique_id=1453599168]
 
@@ -234,9 +238,9 @@ theme_override_font_sizes/font_size = 24
 text = "$0"
 
 [node name="BuyCellButton" type="Button" parent="JailIconOverlay" unique_id=782088729]
-offset_left = 616.0
+offset_left = 376.0
 offset_top = 938.0
-offset_right = 694.0
+offset_right = 454.0
 offset_bottom = 1012.0
 theme_override_fonts/font = ExtResource("4_1bvp3")
 theme_override_font_sizes/font_size = 18
@@ -329,8 +333,96 @@ position = Vector2(881, 208)
 [node name="HorsePoint" type="Marker2D" parent="PathingPoints" unique_id=319184870]
 position = Vector2(1192, 165)
 
+[node name="InstructionsOverlay" type="Control" parent="." unique_id=383533659]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Background" type="ColorRect" parent="InstructionsOverlay" unique_id=876878481]
+layout_mode = 0
+offset_left = 230.0
+offset_top = 84.0
+offset_right = 1731.0
+offset_bottom = 986.0
+color = Color(0.68, 0.68, 0.68, 1)
+
+[node name="PlayGameButton" type="Button" parent="InstructionsOverlay" unique_id=232353184]
+layout_mode = 0
+offset_left = 889.0
+offset_top = 910.0
+offset_right = 1051.0
+offset_bottom = 952.0
+theme_override_fonts/font = ExtResource("4_1bvp3")
+theme_override_font_sizes/font_size = 28
+text = "Play Game"
+
+[node name="IntroLabel" type="Label" parent="InstructionsOverlay" unique_id=1036648034]
+layout_mode = 0
+offset_left = 608.0
+offset_top = 223.0
+offset_right = 1309.0
+offset_bottom = 405.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_h2yge")
+theme_override_font_sizes/font_size = 28
+text = "Welcome sheriff. 
+
+This is now your town. New caravans pass through
+this area every day, dropping off more people. Some
+of these people come thinking the laws don't apply
+out here.
+
+Your goal is to capture any new criminals and clear
+your town of them. Will you succeed or will this 
+wild west town get too wild?
+
+In order to win, you will need to buy more jail cells
+to increase the number of criminals you can catch
+each day. 
+
+Good luck partner!
+"
+
+[node name="IntroLabel2" type="Label" parent="InstructionsOverlay" unique_id=183594326]
+layout_mode = 0
+offset_left = 1439.0
+offset_top = 496.0
+offset_right = 1658.0
+offset_bottom = 567.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_h2yge")
+theme_override_font_sizes/font_size = 24
+text = "Click the criminal
+to capture them"
+
+[node name="IntroLabel3" type="Label" parent="InstructionsOverlay" unique_id=783291742]
+layout_mode = 0
+offset_left = 328.0
+offset_top = 747.0
+offset_right = 549.0
+offset_bottom = 808.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_h2yge")
+theme_override_font_sizes/font_size = 24
+text = "Buy more cells
+with your earnings"
+
+[node name="PosterSprite" type="Sprite2D" parent="InstructionsOverlay" unique_id=1083088519]
+position = Vector2(1521, 346)
+texture = ExtResource("11_dg77c")
+
+[node name="CellSprite" type="Sprite2D" parent="InstructionsOverlay" unique_id=1128354038]
+position = Vector2(431, 687)
+texture = ExtResource("12_ycdy4")
+
+[node name="PeopleSprite" type="Sprite2D" parent="InstructionsOverlay" unique_id=2127762245]
+position = Vector2(1538, 691)
+texture = ExtResource("13_ycdy4")
+
 [connection signal="pressed" from="PosterOverlay/PosterOverlayControls/BeginButton" to="." method="_on_begin_button_pressed"]
 [connection signal="timeout" from="JailIconOverlay/CatchLabel/CatchLabelTimer" to="." method="_on_catch_label_timer_timeout"]
 [connection signal="pressed" from="JailIconOverlay/EndDayButton" to="." method="end_day"]
 [connection signal="pressed" from="JailIconOverlay/BuyCellButton" to="." method="_on_buy_cell_button_pressed"]
 [connection signal="pressed" from="DayOverOverlay/NextDayButton" to="." method="start_day"]
+[connection signal="pressed" from="InstructionsOverlay/PlayGameButton" to="." method="_on_play_game_button_pressed"]
